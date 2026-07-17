@@ -81,7 +81,7 @@ fun DynamicScreen(
             if (isLoading) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
@@ -92,7 +92,7 @@ fun DynamicScreen(
             if (showChat) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     Column(
                         modifier = Modifier
