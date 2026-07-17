@@ -1,8 +1,9 @@
+<?php
 $host = 'localhost';
 $db   = 'missiong1_dynamic_ui';
 // TODO: User needs to provide the username and password in this file or via environment variables
 $user = 'missiong1_RAANJ';
-$pass = 'raanj@2026';
+$pass = 'Raanj@2026';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
