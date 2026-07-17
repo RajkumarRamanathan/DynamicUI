@@ -31,9 +31,19 @@ if (!$refresh) {
 }
 
 // 2. Call Gemini API
-// In production, load this from an environment variable or config.php which is gitignored
-$api_key_safe = getenv('GEMINI_API_KEY') ?: 'YOUR_GEMINI_API_KEY';
-$url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" . $api_key_safe;
+// Fetch API key from settings table
+$stmt = $pdo->prepare("SELECT setting_value FROM settings WHERE setting_key = 'gemini_api_key'");
+$stmt->execute();
+$row = $stmt->fetch();
+$api_key = $row ? $row['setting_value'] : '';
+
+if (empty($api_key)) {
+    http_response_code(500);
+    echo json_encode(["error" => "API key not configured in settings."]);
+    exit;
+}
+
+$url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" . $api_key;
 
 $system_prompt = "You are an SDUI (Server-Driven UI) generator for an Android banking app. 
 You must output ONLY valid JSON. Do not include markdown code blocks like ```json, just the raw JSON object.
