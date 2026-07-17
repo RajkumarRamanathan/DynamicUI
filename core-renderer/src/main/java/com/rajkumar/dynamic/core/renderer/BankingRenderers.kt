@@ -421,3 +421,85 @@ class SubmitButtonRenderer(private val onAction: (com.rajkumar.dynamic.core.mode
         }
     }
 }
+
+class FormBuilderRenderer : WidgetRenderer {
+    @Composable
+    override fun Render(widget: Widget, rendererFactory: RendererFactory) {
+        val formState = LocalFormState.current
+        val id = widget.properties?.get("id")?.jsonPrimitive?.content ?: return
+        
+        val initialFieldsJson = widget.properties?.get("initial_fields")?.jsonArray
+        
+        // Define data class for field internally
+        data class FormField(val id: String, val label: String, val type: String)
+        
+        var fields by remember {
+            mutableStateOf(
+                initialFieldsJson?.mapNotNull { 
+                    val obj = it as? kotlinx.serialization.json.JsonObject ?: return@mapNotNull null
+                    val fieldId = obj["id"]?.jsonPrimitive?.content ?: ""
+                    val fieldLabel = obj["label"]?.jsonPrimitive?.content ?: ""
+                    val fieldType = obj["type"]?.jsonPrimitive?.content ?: "input_text"
+                    FormField(fieldId, fieldLabel, fieldType)
+                }?.toList() ?: emptyList()
+            )
+        }
+        
+        var newFieldLabel by remember { mutableStateOf("") }
+        var newFieldType by remember { mutableStateOf("input_text") }
+        
+        LaunchedEffect(fields) {
+            val jsonArray = buildString {
+                append("[")
+                fields.forEachIndexed { index, field ->
+                    append("""{"id":"${field.id}", "label":"${field.label}", "type":"${field.type}"}""")
+                    if (index < fields.size - 1) append(",")
+                }
+                append("]")
+            }
+            formState[id] = jsonArray
+        }
+        
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Text("Form Fields", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            fields.forEach { field ->
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(text = field.label, fontWeight = FontWeight.SemiBold)
+                        Text(text = "Type: ${field.type}", style = MaterialTheme.typography.bodySmall)
+                    }
+                    IconButton(onClick = { fields = fields.filter { it.id != field.id } }) {
+                        Icon(androidx.compose.material.icons.Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
+                    }
+                }
+                androidx.compose.material3.Divider()
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Add New Field", style = MaterialTheme.typography.titleSmall)
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                OutlinedTextField(
+                    value = newFieldLabel,
+                    onValueChange = { newFieldLabel = it },
+                    label = { Text("Field Label") },
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(onClick = {
+                    if (newFieldLabel.isNotBlank()) {
+                        val newId = newFieldLabel.lowercase().replace(" ", "_").replace(Regex("[^a-z0-9_]"), "")
+                        fields = fields + FormField(newId, newFieldLabel, newFieldType)
+                        newFieldLabel = ""
+                    }
+                }) {
+                    Text("Add")
+                }
+            }
+        }
+    }
+}

@@ -90,9 +90,7 @@ Supported Widget Types and properties:
 - \"quick_action\": {\"label\": string}
 - \"transaction_item\": {\"title\": string, \"subtitle\": string, \"amount\": number, \"date\": string}
 - \"bill_card\": {\"provider\": string, \"amount\": number, \"due_date\": string, \"type\": string, \"card_number\": string}
-- \"input_text\": {\"id\": string, \"label\": string}
-- \"input_checkbox\": {\"id\": string, \"label\": string}
-- \"input_radio_group\": {\"id\": string, \"label\": string, \"options\": \"comma, separated, string\"}
+- \"form_builder\": {\"id\": string, \"initial_fields\": [{\"id\": string, \"label\": string, \"type\": \"input_text\"|\"input_checkbox\"}]}
 - \"submit_button\": {\"label\": string, \"form_id\": string}
 
 CRITICAL INSTRUCTIONS FOR UI GENERATION:
@@ -100,7 +98,7 @@ CRITICAL INSTRUCTIONS FOR UI GENERATION:
 2. I have provided a comprehensive 'Real User Data' JSON below containing all their accounts, loans, bills, and transactions.
 3. IMPORTANT: You must filter this data! Only select and display the specific data that is highly relevant to the User Prompt.
 4. Do NOT hallucinate new numbers. Use the exact numbers from the JSON below.
-5. If the user asks you to generate a \"form\" or asks for inputs (e.g. \"new payee\"), you MUST generate the exact fields required using `input_text`, `input_radio_group`, and `input_checkbox`, followed by a `submit_button` with a unique `form_id`.
+5. If the user asks you to generate a \"form\" or asks for inputs (e.g. \"new payee\"), you MUST generate a `form_builder` widget (e.g. id: \"form_builder_fields\") with the `initial_fields` populated with the fields relevant to their request. Immediately following the `form_builder`, you MUST provide a `submit_button` with `actions` -> `onClick` -> `type: \"create_page\"`. The `submit_button` payload must contain `title` (the name of the form) and `formData` (which our client uses to extract the builder's fields).
 6. Combine multiple different widgets in a `lazy_column` to create a beautiful, comprehensive dashboard for the requested intent.
 
 === REAL USER DATA ===

@@ -119,4 +119,8 @@ object RendererModule {
     @StringKey("submit_button")
     fun provideSubmitButtonRenderer(actionHandler: ActionHandler): WidgetRenderer = 
         SubmitButtonRenderer { actionHandler.handleAction(it) }
+    @Provides
+    @IntoMap
+    @StringKey("form_builder")
+    fun provideFormBuilderRenderer(): WidgetRenderer = FormBuilderRenderer()
 }

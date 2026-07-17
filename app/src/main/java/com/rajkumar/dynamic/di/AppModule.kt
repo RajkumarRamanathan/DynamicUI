@@ -61,6 +61,30 @@ object AppModule {
                             }
                         }
                     }
+                    "create_page" -> {
+                        val formData = action.payload?.get("formData")?.let {
+                            if (it is kotlinx.serialization.json.JsonObject) it else null
+                        }
+                        val fieldsJson = formData?.get("form_builder_fields")?.let {
+                            if (it is kotlinx.serialization.json.JsonPrimitive) it.content else null
+                        }
+                        val title = action.payload?.get("title")?.let {
+                            if (it is kotlinx.serialization.json.JsonPrimitive) it.content else "Custom Form"
+                        } ?: "Custom Form"
+
+                        if (fieldsJson != null) {
+                            val payload = kotlinx.serialization.json.buildJsonObject {
+                                put("title", kotlinx.serialization.json.JsonPrimitive(title))
+                                put("fields", kotlinx.serialization.json.JsonPrimitive(fieldsJson))
+                            }
+                            scope.launch {
+                                val pageId = repository.createPage(payload)
+                                if (pageId != null) {
+                                    navigationManager.navigate(pageId)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
