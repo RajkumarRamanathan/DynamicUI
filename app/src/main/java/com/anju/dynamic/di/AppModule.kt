@@ -1,0 +1,44 @@
+package com.anju.dynamic.di
+
+import com.anju.dynamic.core.model.Action
+import com.anju.dynamic.core.renderer.ActionHandler
+import com.anju.dynamic.navigation.NavigationManager
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonPrimitive
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModule {
+
+    @Provides
+    @Singleton
+    fun provideActionHandler(
+        navigationManager: NavigationManager
+    ): ActionHandler {
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+        return object : ActionHandler {
+            override fun handleAction(action: Action) {
+                when (action.type) {
+                    "navigate" -> {
+                        val destination = action.payload?.get("destination")?.let {
+                            if (it is JsonPrimitive) it.content else null
+                        }
+                        destination?.let { 
+                            scope.launch {
+                                navigationManager.navigate(it)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

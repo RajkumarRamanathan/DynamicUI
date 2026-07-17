@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/apple/AndroidStudioProjects/Dynamic/feature-analytics/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest778032341953342004.xml:2:13-83
+INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-analytics/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest778032341953342004.xml:2:13-83
+	package
+		INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-analytics/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest778032341953342004.xml
+	xmlns:android
+		ADDED from /Users/apple/AndroidStudioProjects/Dynamic/feature-analytics/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest778032341953342004.xml:2:23-81
+uses-sdk
+INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-analytics/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest778032341953342004.xml reason: use-sdk injection requested
+INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-analytics/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest778032341953342004.xml
+INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-analytics/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest778032341953342004.xml
+	android:targetSdkVersion
+		INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-analytics/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest778032341953342004.xml
+	android:minSdkVersion
+		INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-analytics/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest778032341953342004.xml

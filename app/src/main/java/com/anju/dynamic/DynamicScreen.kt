@@ -1,0 +1,188 @@
+package com.anju.dynamic
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.anju.dynamic.core.renderer.RendererFactory
+import com.anju.dynamic.core.renderer.ScreenRenderer
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DynamicScreen(
+    screenId: String,
+    viewModel: DynamicViewModel = hiltViewModel(),
+    rendererFactory: RendererFactory // Now injected
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    var showChat by remember { mutableStateOf(false) }
+    var chatQuery by remember { mutableStateOf("") }
+    var showInfo by remember { mutableStateOf(false) }
+
+    LaunchedEffect(screenId) {
+        viewModel.loadScreen(screenId)
+    }
+
+    Scaffold(
+        floatingActionButton = {
+            if (!showChat && !isLoading) {
+                FloatingActionButton(
+                    onClick = { showChat = true },
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.Chat, contentDescription = "Banking Assistant")
+                }
+            }
+        }
+    ) { padding ->
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Box(modifier = Modifier.padding(padding)) {
+                uiState?.let { screen ->
+                    ScreenRenderer(screen = screen, rendererFactory = rendererFactory)
+                }
+            }
+
+            if (isLoading) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.White
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+
+            if (showChat) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.White
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(padding)
+                            .padding(16.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            IconButton(onClick = { showChat = false }) {
+                                Icon(Icons.Default.Close, contentDescription = "Close")
+                            }
+                            Text(
+                                "Banking Assistant",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                            IconButton(onClick = { showInfo = !showInfo }) {
+                                Icon(
+                                    Icons.Default.Info,
+                                    contentDescription = "Info",
+                                    tint = if (showInfo) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        }
+
+                        if (showInfo) {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 16.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)
+                                ),
+                                shape = MaterialTheme.shapes.large
+                            ) {
+                                Column(modifier = Modifier.padding(20.dp)) {
+                                    Text(
+                                        "How can I help you?",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(bottom = 8.dp)
+                                    )
+                                    val queries = listOf(
+                                        "Show my balance",
+                                        "Show spending analytics",
+                                        "View recent transactions",
+                                        "Pay my bills",
+                                        "Send money",
+                                        "Scan a QR code",
+                                        "Go to home screen"
+                                    )
+                                    queries.forEach { query ->
+                                        Text(
+                                            "• $query",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            modifier = Modifier.padding(vertical = 2.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        OutlinedTextField(
+                            value = chatQuery,
+                            onValueChange = { chatQuery = it },
+                            placeholder = { Text("Ask me something...") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp),
+                            singleLine = true,
+                            maxLines = 1,
+                            shape = MaterialTheme.shapes.extraLarge,
+                            trailingIcon = {
+                                IconButton(
+                                    onClick = {
+                                        if (chatQuery.isNotBlank()) {
+                                            viewModel.handleChatRequest(chatQuery)
+                                            showChat = false
+                                            chatQuery = ""
+                                        }
+                                    },
+                                    colors = IconButtonDefaults.iconButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = Color.White
+                                    ),
+                                    modifier = Modifier.padding(end = 4.dp)
+                                ) {
+                                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send")
+                                }
+                            },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                            keyboardActions = KeyboardActions(onSend = {
+                                if (chatQuery.isNotBlank()) {
+                                    viewModel.handleChatRequest(chatQuery)
+                                    showChat = false
+                                    chatQuery = ""
+                                }
+                            })
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
