@@ -57,8 +57,24 @@ fun DynamicScreen(
             contentAlignment = Alignment.Center
         ) {
             Box(modifier = Modifier.padding(padding)) {
-                uiState?.let { screen ->
-                    ScreenRenderer(screen = screen, rendererFactory = rendererFactory)
+                if (uiState != null) {
+                    ScreenRenderer(screen = uiState!!, rendererFactory = rendererFactory)
+                } else if (!isLoading) {
+                    // Empty initial state
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Welcome to Next gen Banking",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            modifier = Modifier.padding(32.dp)
+                        )
+                    }
                 }
             }
 
