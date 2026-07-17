@@ -25,6 +25,9 @@ class DynamicViewModel @Inject constructor(
 
     fun loadScreen(screenId: String, isAiPrompt: Boolean = false, forceRefresh: Boolean = false) {
         viewModelScope.launch {
+            if (forceRefresh) {
+                _uiState.value = null
+            }
             _isLoading.value = true
             val screen = if (isAiPrompt) {
                 repository.getAiScreen(screenId, forceRefresh)

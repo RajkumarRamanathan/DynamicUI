@@ -39,7 +39,7 @@ $system_prompt = "You are an SDUI (Server-Driven UI) generator for an Android ba
 You must output ONLY valid JSON. Do not include markdown code blocks like ```json, just the raw JSON object.
 The root JSON object MUST be a 'Screen' object with the following structure:
 {
-  \"id\": \"$page_id\",
+  \"id\": \"$page_id-" . time() . "\",
   \"title\": \"<Generated Title Based On Prompt>\",
   \"content\": { <Widget Object> }
 }
