@@ -161,6 +161,38 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     exit;
 }
 
+$has_form_builder = false;
+$has_submit_button = false;
+
+if (isset($decoded['content']['children']) && is_array($decoded['content']['children'])) {
+    foreach ($decoded['content']['children'] as $child) {
+        if (($child['type'] ?? '') === 'form_builder') {
+            $has_form_builder = true;
+        }
+        if (($child['type'] ?? '') === 'submit_button') {
+            $has_submit_button = true;
+        }
+    }
+    
+    if ($has_form_builder && !$has_submit_button) {
+        $decoded['content']['children'][] = [
+            "type" => "submit_button",
+            "properties" => [
+                "label" => "Create Page"
+            ],
+            "actions" => [
+                "onClick" => [
+                    "type" => "create_page",
+                    "payload" => [
+                        "title" => $decoded['title'] ?? "Custom Page"
+                    ]
+                ]
+            ]
+        ];
+        $ai_text = json_encode($decoded);
+    }
+}
+
 // 3. Cache it in Database (Upsert)
 try {
     // Check if it exists first
