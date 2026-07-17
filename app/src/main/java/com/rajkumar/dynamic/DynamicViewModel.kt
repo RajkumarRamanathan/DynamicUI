@@ -11,10 +11,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.rajkumar.dynamic.data.DynamicRepository
 
 @HiltViewModel
 class DynamicViewModel @Inject constructor(
-    val navigationManager: NavigationManager
+    val navigationManager: NavigationManager,
+    private val repository: DynamicRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<Screen?>(null)
     val uiState: StateFlow<Screen?> = _uiState
@@ -25,17 +27,7 @@ class DynamicViewModel @Inject constructor(
     fun loadScreen(screenId: String) {
         viewModelScope.launch {
             _isLoading.value = true
-            delay(2000) // Realistic delay
-            val screen = when (screenId) {
-                "home" -> MockData.getHomeScreen()
-                "balance" -> MockData.getBalanceScreen()
-                "statement" -> MockData.getStatementScreen()
-                "analytics" -> MockData.getAnalyticsScreen()
-                "pay_bills" -> MockData.getPayBillsScreen()
-                "send_money" -> MockData.getSendMoneyScreen()
-                "scan_qr" -> MockData.getScanQrScreen()
-                else -> MockData.getHomeScreen()
-            }
+            val screen = repository.getScreen(screenId)
             _uiState.value = screen
             _isLoading.value = false
         }
