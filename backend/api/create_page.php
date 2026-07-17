@@ -51,7 +51,8 @@ $children[] = [
         "onClick" => [
             "type" => "submit_form",
             "payload" => [
-                "action" => "submit_custom_form"
+                "action" => "submit_dynamic_data",
+                "page_id" => $page_id
             ]
         ]
     ]
@@ -71,11 +72,25 @@ $ui_json_string = json_encode($ui_json);
 require 'db.php'; // Ensure db.php is accessible and sets up $pdo
 
 try {
-    $stmt = $pdo->prepare("INSERT INTO dynamic_pages (page_id, ui_json) VALUES (:page_id, :ui_json)");
+    $stmt = $pdo->prepare("INSERT INTO dynamic_pages (page_id, title, ui_json) VALUES (:page_id, :title, :ui_json)");
     $stmt->execute([
         'page_id' => $page_id,
+        'title' => $page_title,
         'ui_json' => $ui_json_string
     ]);
+    
+    // Generate and execute CREATE TABLE query
+    $table_name = "data_" . $page_id;
+    $columns = ["id INT AUTO_INCREMENT PRIMARY KEY", "user_id INT DEFAULT 1"];
+    foreach ($fields as $field) {
+        $col_name = preg_replace('/[^a-zA-Z0-9_]/', '', $field['id'] ?? '');
+        if (!empty($col_name)) {
+            $columns[] = "`$col_name` TEXT DEFAULT NULL";
+        }
+    }
+    
+    $create_table_sql = "CREATE TABLE IF NOT EXISTS `$table_name` (" . implode(", ", $columns) . ")";
+    $pdo->exec($create_table_sql);
     
     echo json_encode(["status" => "success", "page_id" => $page_id]);
 } catch (PDOException $e) {

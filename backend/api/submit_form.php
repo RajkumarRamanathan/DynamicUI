@@ -23,9 +23,54 @@ if (!isset($input['formData'])) {
 $formData = $input['formData'];
 $formId = isset($input['form_id']) ? $input['form_id'] : 'default_admin_form';
 $userName = isset($input['user_name']) ? $input['user_name'] : 'Admin';
+$action = isset($input['action']) ? $input['action'] : '';
+$pageId = isset($input['page_id']) ? $input['page_id'] : '';
 $formDataJson = json_encode($formData);
 
 try {
+    if ($action === 'submit_dynamic_data' && !empty($pageId)) {
+        $table_name = "data_" . $pageId;
+        
+        $stmt = $pdo->prepare("SELECT id FROM `$table_name` WHERE user_id = 1");
+        $stmt->execute();
+        $row = $stmt->fetch();
+        
+        $columns = [];
+        $values = [];
+        $placeholders = [];
+        
+        foreach ($formData as $k => $v) {
+            $clean_k = preg_replace('/[^a-zA-Z0-9_]/', '', $k);
+            if (!empty($clean_k)) {
+                $columns[] = "`$clean_k`";
+                $values[':'.$clean_k] = is_array($v) ? json_encode($v) : $v;
+                $placeholders[] = ':'.$clean_k;
+            }
+        }
+        
+        if ($row) {
+            $setClause = [];
+            foreach ($columns as $col) {
+                $clean_col = str_replace('`', '', $col);
+                $setClause[] = "$col = :$clean_col";
+            }
+            $sql = "UPDATE `$table_name` SET " . implode(", ", $setClause) . " WHERE user_id = 1";
+            $updateStmt = $pdo->prepare($sql);
+            $updateStmt->execute($values);
+        } else {
+            $columns[] = "`user_id`";
+            $placeholders[] = ":user_id";
+            $values[':user_id'] = 1;
+            
+            $sql = "INSERT INTO `$table_name` (" . implode(", ", $columns) . ") VALUES (" . implode(", ", $placeholders) . ")";
+            $insertStmt = $pdo->prepare($sql);
+            $insertStmt->execute($values);
+        }
+        
+        echo json_encode(["success" => true, "message" => "Dynamic data saved successfully"]);
+        exit;
+    }
+
     // Create dynamic_responses table if it doesn't exist
     $createTableSql = "CREATE TABLE IF NOT EXISTS dynamic_responses (
         id INT AUTO_INCREMENT PRIMARY KEY,

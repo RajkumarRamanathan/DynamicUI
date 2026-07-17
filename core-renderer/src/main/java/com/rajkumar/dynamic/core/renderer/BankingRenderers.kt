@@ -327,6 +327,14 @@ class InputTextRenderer : WidgetRenderer {
         val formState = LocalFormState.current
         val id = widget.properties?.get("id")?.jsonPrimitive?.content ?: return
         val label = widget.properties?.get("label")?.jsonPrimitive?.content ?: ""
+        
+        val serverValue = widget.properties?.get("value")?.jsonPrimitive?.content
+        androidx.compose.runtime.LaunchedEffect(id, serverValue) {
+            if (serverValue != null && formState[id] == null) {
+                formState[id] = serverValue
+            }
+        }
+        
         val value = formState[id] ?: ""
 
         OutlinedTextField(
@@ -345,6 +353,14 @@ class InputCheckboxRenderer : WidgetRenderer {
         val formState = LocalFormState.current
         val id = widget.properties?.get("id")?.jsonPrimitive?.content ?: return
         val label = widget.properties?.get("label")?.jsonPrimitive?.content ?: ""
+        
+        val serverValue = widget.properties?.get("value")?.jsonPrimitive?.content
+        androidx.compose.runtime.LaunchedEffect(id, serverValue) {
+            if (serverValue != null && formState[id] == null) {
+                formState[id] = serverValue
+            }
+        }
+        
         val isChecked = formState[id] == "true"
 
         Row(
