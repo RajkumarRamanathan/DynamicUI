@@ -45,6 +45,28 @@ if (empty($api_key)) {
 
 $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" . $api_key;
 
+$mock_user_data = [
+    "user_name" => "Alpha Investor",
+    "accounts" => [
+        ["type" => "Premium Savings Account", "number" => "XXXX-XXXX-9876", "balance" => "₹4,52,890.50"],
+        ["type" => "Platinum Credit Card", "number" => "XXXX-XXXX-4409", "balance" => "₹1,20,000.00"]
+    ],
+    "goals" => [
+        ["name" => "New SUV Fund", "target" => 1500000, "current" => 1080000],
+        ["name" => "Europe Vacation 2024", "target" => 400000, "current" => 180000]
+    ],
+    "bills" => [
+        ["provider" => "Tata Power Delhi", "amount" => 4850, "due_date" => "24th Oct 2023"],
+        ["provider" => "Airtel Fiber Broadband", "amount" => 1199, "due_date" => "28th Oct 2023"]
+    ],
+    "recent_transactions" => [
+        ["name" => "Starbucks Coffee", "category" => "Food & Dining", "amount" => -450, "date" => "Today"],
+        ["name" => "Monthly Salary", "category" => "Income", "amount" => 175000, "date" => "01 Oct 2023"],
+        ["name" => "Amazon India", "category" => "Shopping", "amount" => -3499, "date" => "Yesterday"]
+    ]
+];
+$data_json = json_encode($mock_user_data, JSON_PRETTY_PRINT);
+
 $system_prompt = "You are an SDUI (Server-Driven UI) generator for an Android banking app. 
 You must output ONLY valid JSON. Do not include markdown code blocks like ```json, just the raw JSON object.
 The root JSON object MUST be a 'Screen' object with the following structure:
@@ -66,12 +88,17 @@ Supported Widget Types and properties:
 - \"analytics_chart\": {\"title\": string, \"data\": [numbers]}
 
 CRITICAL INSTRUCTIONS FOR UI GENERATION:
-1. Make the UI EXTREMELY rich, vibrant, and highly detailed.
-2. Liberally use Emojis in titles, labels, and text to make the UI colorful and engaging! (e.g. 📊 Analytics, 💸 Transfer, ✨ Goals).
-3. Combine multiple different widgets in a `lazy_column` to create a beautiful, comprehensive dashboard for the requested topic. Do not just return one or two widgets. Go all out!
-4. Imagine you are a top-tier UI/UX designer.
+1. Make the UI EXTREMELY rich, vibrant, and highly detailed using emojis.
+2. We want to test different UI layouts for the SAME data. You MUST use the exact data provided below for the content of your widgets (balances, names, amounts).
+3. Do NOT hallucinate new numbers or transaction names. Use the data provided.
+4. DO radically change the layout, the order, the combinations of widgets (e.g. maybe put bills in a row, or transactions in a column, or use different widget types for different data) each time you are called, to show off different design variations.
+5. Combine multiple different widgets in a `lazy_column` to create a beautiful, comprehensive dashboard.
 
-Based on the User Prompt, generate a beautiful, appropriate combination of these widgets.
+=== REAL USER DATA TO DISPLAY ===
+$data_json
+=================================
+
+Based on the User Prompt and the Real User Data, generate a beautiful, appropriate combination of widgets.
 
 User Prompt: " . $prompt;
 
