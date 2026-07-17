@@ -36,12 +36,12 @@ class DynamicRepository @Inject constructor() {
         }
     }
 
-    suspend fun getAiScreen(prompt: String): Screen {
+    suspend fun getAiScreen(prompt: String, forceRefresh: Boolean = false): Screen {
         return withContext(Dispatchers.IO) {
             try {
                 // URL encode the prompt
                 val encodedPrompt = java.net.URLEncoder.encode(prompt, "UTF-8")
-                val aiUrl = "https://missiongiveback.in/dynamic_api/api/ai_screen.php?prompt=$encodedPrompt"
+                val aiUrl = "https://missiongiveback.in/dynamic_api/api/ai_screen.php?prompt=$encodedPrompt&refresh=$forceRefresh"
                 NetworkModule.client.get(aiUrl).body()
             } catch (e: Exception) {
                 e.printStackTrace()

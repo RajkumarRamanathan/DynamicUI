@@ -7,8 +7,6 @@ require_once '../db.php';
 header('Content-Type: application/json');
 
 $prompt = $_GET['prompt'] ?? '';
-$refresh = isset($_GET['refresh']) && $_GET['refresh'] === 'true';
-
 if (empty($prompt)) {
     http_response_code(400);
     echo json_encode(["error" => "Prompt is required"]);
@@ -18,16 +16,14 @@ if (empty($prompt)) {
 // Create a unique page_id based on the prompt (slugify)
 $page_id = "ai_" . md5(strtolower(trim($prompt)));
 
-// 1. Check Cache (skip if refresh=true)
-if (!$refresh) {
-    $stmt = $pdo->prepare("SELECT ui_json FROM dynamic_pages WHERE page_id = :page_id");
-    $stmt->execute(['page_id' => $page_id]);
-    $cached_page = $stmt->fetch();
+// 1. Check Cache
+$stmt = $pdo->prepare("SELECT ui_json FROM dynamic_pages WHERE page_id = :page_id");
+$stmt->execute(['page_id' => $page_id]);
+$cached_page = $stmt->fetch();
 
-    if ($cached_page) {
-        echo $cached_page['ui_json'];
-        exit;
-    }
+if ($cached_page) {
+    echo $cached_page['ui_json'];
+    exit;
 }
 
 // 2. Call Gemini API
@@ -117,28 +113,16 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     exit;
 }
 
-// 3. Cache it in Database (Upsert)
+// 3. Cache it in Database
 try {
-    // Check if it exists first
-    $stmt = $pdo->prepare("SELECT 1 FROM dynamic_pages WHERE page_id = :page_id");
-    $stmt->execute(['page_id' => $page_id]);
-    if ($stmt->fetch()) {
-        $updateStmt = $pdo->prepare("UPDATE dynamic_pages SET title = :title, ui_json = :ui_json WHERE page_id = :page_id");
-        $updateStmt->execute([
-            'title' => $decoded['title'] ?? 'AI Response',
-            'ui_json' => $ai_text,
-            'page_id' => $page_id
-        ]);
-    } else {
-        $insertStmt = $pdo->prepare("INSERT INTO dynamic_pages (page_id, title, ui_json) VALUES (:page_id, :title, :ui_json)");
-        $insertStmt->execute([
-            'page_id' => $page_id,
-            'title' => $decoded['title'] ?? 'AI Response',
-            'ui_json' => $ai_text
-        ]);
-    }
+    $stmt = $pdo->prepare("INSERT INTO dynamic_pages (page_id, title, ui_json) VALUES (:page_id, :title, :ui_json)");
+    $stmt->execute([
+        'page_id' => $page_id,
+        'title' => $decoded['title'] ?? 'AI Response',
+        'ui_json' => $ai_text
+    ]);
 } catch (PDOException $e) {
-    // Ignore database errors
+    // Ignore duplicate key errors if multiple concurrent requests happen
 }
 
 echo $ai_text;

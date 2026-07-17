@@ -23,11 +23,11 @@ class DynamicViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    fun loadScreen(screenId: String, isAiPrompt: Boolean = false) {
+    fun loadScreen(screenId: String, isAiPrompt: Boolean = false, forceRefresh: Boolean = false) {
         viewModelScope.launch {
             _isLoading.value = true
             val screen = if (isAiPrompt) {
-                repository.getAiScreen(screenId)
+                repository.getAiScreen(screenId, forceRefresh)
             } else {
                 repository.getScreen(screenId)
             }
@@ -46,7 +46,7 @@ class DynamicViewModel @Inject constructor(
      * Simulates processing a chat request using an on-device AI intent classifier.
      * In a real scenario, this would use Google AICore or MediaPipe.
      */
-    fun handleChatRequest(query: String) {
+    fun handleChatRequest(query: String, forceRefresh: Boolean = false) {
         viewModelScope.launch {
             val intent = classifyIntent(query)
             val screenId = when (intent) {
@@ -65,9 +65,9 @@ class DynamicViewModel @Inject constructor(
             if (intent == "go_admin") {
                 navigate("admin")
             } else if (intent == "unknown" && screenId != null) {
-                loadScreen(screenId, isAiPrompt = true)
+                loadScreen(screenId, isAiPrompt = true, forceRefresh = forceRefresh)
             } else if (screenId != null) {
-                loadScreen(screenId)
+                loadScreen(screenId, forceRefresh = forceRefresh)
             } else {
                 _isLoading.value = false
             }

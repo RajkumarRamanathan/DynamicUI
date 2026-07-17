@@ -31,6 +31,7 @@ fun DynamicScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     var showChat by remember { mutableStateOf(false) }
     var chatQuery by remember { mutableStateOf("") }
+    var forceRefresh by remember { mutableStateOf(false) }
     var showInfo by remember { mutableStateOf(false) }
 
     LaunchedEffect(screenId) {
@@ -160,6 +161,17 @@ fun DynamicScreen(
                         }
 
                         Spacer(modifier = Modifier.weight(1f))
+                        
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        ) {
+                            androidx.compose.material3.Checkbox(
+                                checked = forceRefresh,
+                                onCheckedChange = { forceRefresh = it }
+                            )
+                            Text("Need new UI (Force refresh AI)", style = MaterialTheme.typography.bodyMedium)
+                        }
 
                         OutlinedTextField(
                             value = chatQuery,
@@ -175,9 +187,10 @@ fun DynamicScreen(
                                 IconButton(
                                     onClick = {
                                         if (chatQuery.isNotBlank()) {
-                                            viewModel.handleChatRequest(chatQuery)
+                                            viewModel.handleChatRequest(chatQuery, forceRefresh)
                                             showChat = false
                                             chatQuery = ""
+                                            forceRefresh = false
                                         }
                                     },
                                     colors = IconButtonDefaults.iconButtonColors(
@@ -192,9 +205,10 @@ fun DynamicScreen(
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
                             keyboardActions = KeyboardActions(onSend = {
                                 if (chatQuery.isNotBlank()) {
-                                    viewModel.handleChatRequest(chatQuery)
+                                    viewModel.handleChatRequest(chatQuery, forceRefresh)
                                     showChat = false
                                     chatQuery = ""
+                                    forceRefresh = false
                                 }
                             })
                         )
