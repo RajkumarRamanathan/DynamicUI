@@ -63,11 +63,12 @@ fun DynamicScreen(
                 painter = androidx.compose.ui.res.painterResource(id = com.rajkumar.dynamic.R.drawable.ic_launcher_foreground),
                 contentDescription = "App Watermark",
                 modifier = Modifier
-                    .fillMaxSize(0.6f)
+                    .fillMaxWidth(0.6f)
+                    .aspectRatio(1f)
                     .align(Alignment.Center)
                     .clip(androidx.compose.foundation.shape.CircleShape),
                 alpha = 0.08f,
-                contentScale = androidx.compose.ui.layout.ContentScale.Fit
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop
             )
 
             Box(modifier = Modifier.padding(padding)) {
