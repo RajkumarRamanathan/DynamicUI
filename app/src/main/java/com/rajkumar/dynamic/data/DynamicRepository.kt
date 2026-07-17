@@ -6,7 +6,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.http.contentType
+import io.ktor.client.request.header
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -41,7 +41,7 @@ class DynamicRepository @Inject constructor() {
             try {
                 val adminUrl = "https://missiongiveback.in/dynamic_api/api/admin_update.php"
                 val response = NetworkModule.client.post(adminUrl) {
-                    io.ktor.client.request.header("Content-Type", "application/json")
+                    header("Content-Type", "application/json")
                     setBody(kotlinx.serialization.json.buildJsonObject {
                         put("balance", kotlinx.serialization.json.JsonPrimitive(newBalance))
                     })
