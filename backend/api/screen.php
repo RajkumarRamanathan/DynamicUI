@@ -167,8 +167,8 @@ if ($id === 'home') {
                     "type" => "progress_item",
                     "properties" => [
                         "label" => "Europe Trip",
-                        "progress" => 0.30,
-                        "details" => "₹1,50,000 / ₹5,00,000"
+                        "progress" => 0.50,
+                        "details" => "₹2,50,000 / ₹5,00,000"
                     ]
                 ]
             ]
