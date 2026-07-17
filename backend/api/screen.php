@@ -243,7 +243,7 @@ if ($id === 'home') {
             "type" => "bill_card",
             "properties" => [
                 "provider" => $bill['provider'],
-                "amount" => "₹" . number_format($bill['amount'], 2),
+                "amount" => $bill['amount'],
                 "due_date" => $bill['due_date'],
                 "type" => $bill['type'],
                 "card_number" => "**** 5678" // mock detail
