@@ -19,7 +19,9 @@ class DynamicRepository @Inject constructor(private val userManager: UserManager
     suspend fun getScreen(id: String): Screen {
         return withContext(Dispatchers.IO) {
             try {
-                NetworkModule.client.get("$baseUrl?id=$id&t=${System.currentTimeMillis()}").body()
+                val userName = userManager.getUserName() ?: "User"
+                val encodedUserName = java.net.URLEncoder.encode(userName, "UTF-8")
+                NetworkModule.client.get("$baseUrl?id=$id&t=${System.currentTimeMillis()}&user_name=$encodedUserName").body()
             } catch (e: Exception) {
                 e.printStackTrace()
                 Screen(

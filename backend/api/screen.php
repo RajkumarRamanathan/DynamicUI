@@ -105,9 +105,11 @@ if ($id === 'home') {
         $children[] = createTransaction($txn['merchant'], $txn['category'], $txn['amount'], $txn['date_str']);
     }
     
+    $userName = isset($_GET['user_name']) ? urldecode($_GET['user_name']) : $user['name'];
+    
     $screen = [
         "id" => "home",
-        "title" => "Good Morning, " . $user['name'],
+        "title" => "Good Morning, " . $userName,
         "content" => [
             "type" => "lazy_column",
             "children" => $children
