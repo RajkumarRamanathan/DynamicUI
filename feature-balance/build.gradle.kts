@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anju.dynamic.feature.balance"
+    namespace = "com.rajkumar.dynamic.feature.balance"
     compileSdk = 35
 
     defaultConfig {

@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.anju.dynamic"
+    namespace = "com.rajkumar.dynamic"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.anju.dynamic"
+        applicationId = "com.rajkumar.dynamic"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

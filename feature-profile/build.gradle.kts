@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anju.dynamic.feature.profile"
+    namespace = "com.rajkumar.dynamic.feature.profile"
     compileSdk = 35
     defaultConfig { minSdk = 26 }
     buildFeatures { compose = true }

@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anju.dynamic.navigation"
+    namespace = "com.rajkumar.dynamic.navigation"
     compileSdk = 35
     defaultConfig { minSdk = 26 }
     buildFeatures { compose = true }

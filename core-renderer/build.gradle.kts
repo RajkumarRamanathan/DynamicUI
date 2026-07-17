@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anju.dynamic.core.renderer"
+    namespace = "com.rajkumar.dynamic.core.renderer"
     compileSdk = 35
 
     defaultConfig {

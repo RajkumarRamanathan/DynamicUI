@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anju.dynamic.core.json"
+    namespace = "com.rajkumar.dynamic.core.json"
     compileSdk = 35
 
     defaultConfig {

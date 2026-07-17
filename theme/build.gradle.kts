@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anju.dynamic.theme"
+    namespace = "com.rajkumar.dynamic.theme"
     compileSdk = 35
 
     defaultConfig {

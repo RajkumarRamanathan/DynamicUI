@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anju.dynamic.mock.api"
+    namespace = "com.rajkumar.dynamic.mock.api"
     compileSdk = 35
     defaultConfig { minSdk = 26 }
 }

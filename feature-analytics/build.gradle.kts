@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anju.dynamic.feature.analytics"
+    namespace = "com.rajkumar.dynamic.feature.analytics"
     compileSdk = 35
     defaultConfig { minSdk = 26 }
     buildFeatures { compose = true }

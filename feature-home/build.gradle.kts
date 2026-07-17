@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anju.dynamic.feature.home"
+    namespace = "com.rajkumar.dynamic.feature.home"
     compileSdk = 35
 
     defaultConfig {

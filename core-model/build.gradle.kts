@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anju.dynamic.core.model"
+    namespace = "com.rajkumar.dynamic.core.model"
     compileSdk = 35
 
     defaultConfig {
