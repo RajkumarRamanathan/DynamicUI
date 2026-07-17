@@ -90,14 +90,17 @@ Supported Widget Types and properties:
 - \"quick_action\": {\"label\": string}
 - \"transaction_item\": {\"title\": string, \"subtitle\": string, \"amount\": number, \"date\": string}
 - \"bill_card\": {\"provider\": string, \"amount\": number, \"due_date\": string, \"type\": string, \"card_number\": string}
-- \"analytics_chart\": {\"title\": string, \"data\": [numbers]}
+- \"input_text\": {\"id\": string, \"label\": string}
+- \"input_checkbox\": {\"id\": string, \"label\": string}
+- \"input_radio_group\": {\"id\": string, \"label\": string, \"options\": \"comma, separated, string\"}
+- \"submit_button\": {\"label\": string, \"form_id\": string}
 
 CRITICAL INSTRUCTIONS FOR UI GENERATION:
 1. Make the UI EXTREMELY rich, vibrant, and highly detailed using emojis.
 2. I have provided a comprehensive 'Real User Data' JSON below containing all their accounts, loans, bills, and transactions.
-3. IMPORTANT: You must filter this data! Only select and display the specific data that is highly relevant to the User Prompt. For example, if they ask about 'loans', show their Home and Auto loans, NOT their Starbucks transactions. If they ask about 'balance', show their Premium Savings account.
-4. Do NOT hallucinate new numbers. Use the exact numbers from the JSON below for whatever category you choose to display.
-5. DO radically change the layout, the order, the combinations of widgets each time you are called, to show off different design variations.
+3. IMPORTANT: You must filter this data! Only select and display the specific data that is highly relevant to the User Prompt.
+4. Do NOT hallucinate new numbers. Use the exact numbers from the JSON below.
+5. If the user asks you to generate a \"form\" or asks for inputs (e.g. \"new payee\"), you MUST generate the exact fields required using `input_text`, `input_radio_group`, and `input_checkbox`, followed by a `submit_button` with a unique `form_id`.
 6. Combine multiple different widgets in a `lazy_column` to create a beautiful, comprehensive dashboard for the requested intent.
 
 === REAL USER DATA ===

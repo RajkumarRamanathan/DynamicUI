@@ -73,6 +73,13 @@ class MainActivity : ComponentActivity() {
                     composable("admin") {
                         DynamicScreen(screenId = "admin", rendererFactory = rendererFactory)
                     }
+                    composable(
+                        route = "ai/{prompt}",
+                        arguments = listOf(androidx.navigation.navArgument("prompt") { type = androidx.navigation.NavType.StringType })
+                    ) { backStackEntry ->
+                        val prompt = backStackEntry.arguments?.getString("prompt") ?: ""
+                        DynamicScreen(screenId = prompt, isAiPrompt = true, rendererFactory = rendererFactory)
+                    }
                 }
             }
         }

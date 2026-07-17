@@ -25,6 +25,7 @@ import com.rajkumar.dynamic.core.renderer.ScreenRenderer
 @Composable
 fun DynamicScreen(
     screenId: String,
+    isAiPrompt: Boolean = false,
     viewModel: DynamicViewModel = hiltViewModel(),
     rendererFactory: RendererFactory // Now injected
 ) {
@@ -35,9 +36,9 @@ fun DynamicScreen(
     var forceRefresh by remember { mutableStateOf(false) }
     var showInfo by remember { mutableStateOf(false) }
 
-    LaunchedEffect(screenId) {
+    LaunchedEffect(screenId, isAiPrompt) {
         if (screenId.isNotBlank()) {
-            viewModel.loadScreen(screenId)
+            viewModel.loadScreen(screenId, isAiPrompt = isAiPrompt)
         }
     }
 

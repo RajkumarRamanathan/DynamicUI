@@ -45,6 +45,22 @@ object AppModule {
                             }
                         }
                     }
+                    "generate_ai_form" -> {
+                        val promptField = action.payload?.get("prompt_field")?.let {
+                            if (it is kotlinx.serialization.json.JsonPrimitive) it.content else "ai_prompt"
+                        } ?: "ai_prompt"
+                        val formData = action.payload?.get("formData")?.let {
+                            if (it is kotlinx.serialization.json.JsonObject) it else null
+                        }
+                        val prompt = formData?.get(promptField)?.let {
+                            if (it is kotlinx.serialization.json.JsonPrimitive) it.content else null
+                        }
+                        if (!prompt.isNullOrBlank()) {
+                            scope.launch {
+                                navigationManager.navigate("ai/$prompt")
+                            }
+                        }
+                    }
                 }
             }
         }

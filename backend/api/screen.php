@@ -316,58 +316,36 @@ if ($id === 'home') {
 } else if ($id === 'admin') {
     $screen = [
         "id" => "admin",
-        "title" => "Admin Settings",
+        "title" => "AI Form Generator",
         "content" => [
             "type" => "lazy_column",
             "children" => [
                 [
                     "type" => "text",
                     "properties" => [
-                        "text" => "Update Account Details",
-                        "style" => "titleLarge",
+                        "text" => "What kind of form do you want to generate? (e.g. 'new Payee', 'loan application')",
+                        "style" => "titleMedium",
                         "padding" => 16
                     ]
                 ],
                 [
                     "type" => "input_text",
                     "properties" => [
-                        "id" => "new_balance",
-                        "label" => "New Balance"
-                    ]
-                ],
-                [
-                    "type" => "input_text",
-                    "properties" => [
-                        "id" => "account_type",
-                        "label" => "Account Type"
-                    ]
-                ],
-                [
-                    "type" => "input_radio_group",
-                    "properties" => [
-                        "id" => "theme_color",
-                        "label" => "App Theme Color",
-                        "options" => "Blue, Dark, Light, Green"
-                    ]
-                ],
-                [
-                    "type" => "input_checkbox",
-                    "properties" => [
-                        "id" => "enable_premium",
-                        "label" => "Enable Premium Features"
+                        "id" => "ai_prompt",
+                        "label" => "Form Intent"
                     ]
                 ],
                 [
                     "type" => "submit_button",
                     "properties" => [
-                        "label" => "Save Admin Settings",
-                        "form_id" => "admin_balance_update"
+                        "label" => "Generate Form",
+                        "form_id" => "generate_ai_form"
                     ],
                     "actions" => [
                         "onClick" => [
-                            "type" => "submit_form",
+                            "type" => "generate_ai_form",
                             "payload" => [
-                                "action" => "update_settings"
+                                "prompt_field" => "ai_prompt"
                             ]
                         ]
                     ]
