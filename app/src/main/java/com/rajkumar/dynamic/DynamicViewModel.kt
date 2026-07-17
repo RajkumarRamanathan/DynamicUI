@@ -3,7 +3,6 @@ package com.rajkumar.dynamic
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rajkumar.dynamic.core.model.Screen
-import com.rajkumar.dynamic.mock.api.MockData
 import com.rajkumar.dynamic.navigation.NavigationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -60,9 +59,6 @@ class DynamicViewModel @Inject constructor(
             if (screenId != null) {
                 loadScreen(screenId)
             } else {
-                // Thinking delay for unknown intents to make it realistic
-                _isLoading.value = true
-                delay(2000)
                 _isLoading.value = false
             }
         }
