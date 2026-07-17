@@ -34,6 +34,6 @@ include(":feature-balance")
 include(":feature-statement")
 include(":feature-analytics")
 include(":feature-profile")
-include(":mock-api")
+
 include(":navigation")
 include(":theme")

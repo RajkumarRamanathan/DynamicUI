@@ -55,7 +55,7 @@ dependencies {
     implementation(project(":feature-profile"))
     implementation(project(":navigation"))
     implementation(project(":theme"))
-    implementation(project(":mock-api"))
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
