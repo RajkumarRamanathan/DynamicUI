@@ -36,6 +36,29 @@ class DynamicRepository @Inject constructor() {
         }
     }
 
+    suspend fun getAiScreen(prompt: String): Screen {
+        return withContext(Dispatchers.IO) {
+            try {
+                // URL encode the prompt
+                val encodedPrompt = java.net.URLEncoder.encode(prompt, "UTF-8")
+                val aiUrl = "https://missiongiveback.in/dynamic_api/api/ai_screen.php?prompt=$encodedPrompt"
+                NetworkModule.client.get(aiUrl).body()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Screen(
+                    id = "error",
+                    title = "AI Error",
+                    content = com.rajkumar.dynamic.core.model.Widget(
+                        type = "text",
+                        properties = kotlinx.serialization.json.buildJsonObject {
+                            put("text", kotlinx.serialization.json.JsonPrimitive("Failed to generate UI: ${e.localizedMessage}"))
+                        }
+                    )
+                )
+            }
+        }
+    }
+
     suspend fun updateBalance(newBalance: Double): Boolean {
         return withContext(Dispatchers.IO) {
             try {

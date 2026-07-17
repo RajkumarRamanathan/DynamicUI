@@ -23,10 +23,14 @@ class DynamicViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    fun loadScreen(screenId: String) {
+    fun loadScreen(screenId: String, isAiPrompt: Boolean = false) {
         viewModelScope.launch {
             _isLoading.value = true
-            val screen = repository.getScreen(screenId)
+            val screen = if (isAiPrompt) {
+                repository.getAiScreen(screenId)
+            } else {
+                repository.getScreen(screenId)
+            }
             _uiState.value = screen
             _isLoading.value = false
         }
@@ -54,12 +58,14 @@ class DynamicViewModel @Inject constructor(
                 "show_scan_qr" -> "scan_qr"
                 "go_home" -> "home"
                 "go_admin" -> "admin"
-                "unknown" -> query.trim().lowercase().replace(" ", "_")
+                "unknown" -> query // Keep the raw query for AI
                 else -> null
             }
 
             if (intent == "go_admin") {
                 navigate("admin")
+            } else if (intent == "unknown" && screenId != null) {
+                loadScreen(screenId, isAiPrompt = true)
             } else if (screenId != null) {
                 loadScreen(screenId)
             } else {
