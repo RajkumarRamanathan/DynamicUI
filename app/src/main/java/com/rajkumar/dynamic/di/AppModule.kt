@@ -74,7 +74,10 @@ object AppModule {
                         }
                         
                         val title = action.payload?.get("title")?.let {
-                            if (it is kotlinx.serialization.json.JsonPrimitive) it.content else "Custom Form"
+                            if (it is kotlinx.serialization.json.JsonPrimitive) it.content else null
+                        } ?: action.payload?.get("title_field")?.let {
+                            val fieldId = if (it is kotlinx.serialization.json.JsonPrimitive) it.content else ""
+                            formData?.get(fieldId)?.let { v -> if (v is kotlinx.serialization.json.JsonPrimitive) v.content else null }
                         } ?: "Custom Form"
 
                         if (fieldsJson != null) {

@@ -72,6 +72,12 @@ $mock_user_data = [
 ];
 $data_json = json_encode($mock_user_data, JSON_PRETTY_PRINT);
 
+require_once 'db.php';
+
+$stmt = $pdo->query("SELECT page_id, title FROM dynamic_pages ORDER BY created_at DESC");
+$existing_pages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$pages_json = json_encode($existing_pages, JSON_PRETTY_PRINT);
+
 $system_prompt = "You are an SDUI (Server-Driven UI) generator for an Android banking app. 
 You must output ONLY valid JSON. Do not include markdown code blocks like ```json, just the raw JSON object.
 The root JSON object MUST be a 'Screen' object with the following structure:
@@ -90,15 +96,17 @@ Supported Widget Types and properties:
 - \"quick_action\": {\"label\": string}
 - \"transaction_item\": {\"title\": string, \"subtitle\": string, \"amount\": number, \"date\": string}
 - \"bill_card\": {\"provider\": string, \"amount\": number, \"due_date\": string, \"type\": string, \"card_number\": string}
-- \"form_builder\": {\"id\": string, \"initial_fields\": [{\"id\": string, \"label\": string, \"type\": \"input_text\"|\"input_checkbox\"}]}
-- \"submit_button\": {\"label\": string, \"form_id\": string}
 
 CRITICAL INSTRUCTIONS FOR UI GENERATION:
 1. Make the UI EXTREMELY rich, vibrant, and highly detailed using emojis.
 2. I have provided a comprehensive 'Real User Data' JSON below containing all their accounts, loans, bills, and transactions.
 3. IMPORTANT: You must filter this data! Only select and display the specific data that is highly relevant to the User Prompt.
 4. Do NOT hallucinate new numbers. Use the exact numbers from the JSON below.
-5. If the user asks you to generate a \"form\" or asks for inputs (e.g. \"new payee\"), you MUST generate a `form_builder` widget (e.g. id: \"form_builder_fields\") with the `initial_fields` populated with the fields relevant to their request. Immediately following the `form_builder`, you MUST provide a `submit_button` with `actions` -> `onClick` -> `type: \"create_page\"`. The `submit_button` payload must contain `title` (the name of the form) and `formData` (which our client uses to extract the builder's fields).
+5. ROUTING INSTRUCTION: The admin has created the following dynamic pages in the system:
+=== EXISTING PAGES ===
+$pages_json
+======================
+If the user's prompt matches the intent of any of these existing pages (e.g. asking to fill out a form or view a page related to these titles), you MUST return a UI containing a `text` widget acknowledging their request and a `quick_action` widget. The `quick_action` widget must have `actions` -> `onClick` -> `type: \"navigate\"` and `payload: {\"screen_id\": \"<THE_PAGE_ID_FROM_EXISTING_PAGES>\"}`.
 6. Combine multiple different widgets in a `lazy_column` to create a beautiful, comprehensive dashboard for the requested intent.
 
 === REAL USER DATA ===

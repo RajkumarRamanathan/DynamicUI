@@ -316,36 +316,35 @@ if ($id === 'home') {
 } else if ($id === 'admin') {
     $screen = [
         "id" => "admin",
-        "title" => "AI Form Generator",
+        "title" => "Form Builder",
         "content" => [
             "type" => "lazy_column",
             "children" => [
                 [
-                    "type" => "text",
+                    "type" => "input_text",
                     "properties" => [
-                        "text" => "What kind of form do you want to generate? (e.g. 'new Payee', 'loan application')",
-                        "style" => "titleMedium",
-                        "padding" => 16
+                        "id" => "page_title",
+                        "label" => "Page Title (e.g. New Payee)"
                     ]
                 ],
                 [
-                    "type" => "input_text",
+                    "type" => "form_builder",
                     "properties" => [
-                        "id" => "ai_prompt",
-                        "label" => "Form Intent"
+                        "id" => "form_builder_fields",
+                        "initial_fields" => []
                     ]
                 ],
                 [
                     "type" => "submit_button",
                     "properties" => [
-                        "label" => "Generate Form",
-                        "form_id" => "generate_ai_form"
+                        "label" => "Create Page",
+                        "form_id" => "create_page_form"
                     ],
                     "actions" => [
                         "onClick" => [
-                            "type" => "generate_ai_form",
+                            "type" => "create_page",
                             "payload" => [
-                                "prompt_field" => "ai_prompt"
+                                "title_field" => "page_title"
                             ]
                         ]
                     ]
