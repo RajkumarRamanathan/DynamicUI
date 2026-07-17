@@ -128,6 +128,189 @@ if ($id === 'home') {
             "children" => $children
         ]
     ];
+} else if ($id === 'balance') {
+    $stmt = $pdo->query("SELECT * FROM accounts WHERE user_id = 1");
+    $accounts = $stmt->fetchAll();
+    $acc = count($accounts) > 0 ? $accounts[0] : null;
+    
+    $screen = [
+        "id" => "balance",
+        "title" => "Account Balance",
+        "content" => [
+            "type" => "column",
+            "children" => [
+                [
+                    "type" => "balance_card",
+                    "properties" => [
+                        "balance" => $acc ? "₹" . number_format($acc['balance'], 2) : "₹0.00",
+                        "account_number" => $acc ? $acc['account_number'] : "**** 0000",
+                        "account_type" => "Total Balance"
+                    ]
+                ],
+                [
+                    "type" => "text",
+                    "properties" => [
+                        "text" => "Saving Goals",
+                        "style" => "titleMedium",
+                        "padding" => 16
+                    ]
+                ],
+                [
+                    "type" => "progress_item",
+                    "properties" => [
+                        "label" => "New Car",
+                        "progress" => 0.65,
+                        "details" => "₹8,50,000 / ₹12,00,000"
+                    ]
+                ],
+                [
+                    "type" => "progress_item",
+                    "properties" => [
+                        "label" => "Europe Trip",
+                        "progress" => 0.30,
+                        "details" => "₹1,50,000 / ₹5,00,000"
+                    ]
+                ]
+            ]
+        ]
+    ];
+} else if ($id === 'analytics') {
+    $screen = [
+        "id" => "analytics",
+        "title" => "Spending Analytics",
+        "content" => [
+            "type" => "column",
+            "children" => [
+                [
+                    "type" => "analytics_chart",
+                    "properties" => [
+                        "title" => "Monthly Spends",
+                        "data" => [1200, 2500, 1800, 3200, 2100, 2800]
+                    ]
+                ],
+                [
+                    "type" => "text",
+                    "properties" => [
+                        "text" => "Top Categories",
+                        "style" => "titleMedium",
+                        "padding" => 16
+                    ]
+                ],
+                [
+                    "type" => "progress_item",
+                    "properties" => [
+                        "label" => "Shopping",
+                        "progress" => 0.45,
+                        "details" => "₹12,400"
+                    ]
+                ],
+                [
+                    "type" => "progress_item",
+                    "properties" => [
+                        "label" => "Food & Drinks",
+                        "progress" => 0.25,
+                        "details" => "₹6,200"
+                    ]
+                ],
+                [
+                    "type" => "progress_item",
+                    "properties" => [
+                        "label" => "Transport",
+                        "progress" => 0.15,
+                        "details" => "₹4,100"
+                    ]
+                ]
+            ]
+        ]
+    ];
+} else if ($id === 'pay_bills') {
+    $stmt = $pdo->query("SELECT * FROM bills WHERE user_id = 1");
+    $bills = $stmt->fetchAll();
+    
+    $children = [
+        [
+            "type" => "text",
+            "properties" => [
+                "text" => "Pending Bills",
+                "style" => "titleMedium",
+                "padding" => 16
+            ]
+        ]
+    ];
+    
+    foreach ($bills as $bill) {
+        $children[] = [
+            "type" => "bill_card",
+            "properties" => [
+                "provider" => $bill['provider'],
+                "amount" => "₹" . number_format($bill['amount'], 2),
+                "due_date" => $bill['due_date'],
+                "type" => $bill['type'],
+                "card_number" => "**** 5678" // mock detail
+            ]
+        ];
+    }
+    
+    $screen = [
+        "id" => "pay_bills",
+        "title" => "Pay Bills",
+        "content" => [
+            "type" => "lazy_column",
+            "children" => $children
+        ]
+    ];
+} else if ($id === 'send_money') {
+    $screen = [
+        "id" => "send_money",
+        "title" => "Send Money",
+        "content" => [
+            "type" => "lazy_column",
+            "children" => [
+                [
+                    "type" => "text",
+                    "properties" => [
+                        "text" => "Recent Recipients",
+                        "style" => "titleMedium",
+                        "padding" => 16
+                    ]
+                ],
+                [
+                    "type" => "payee_item",
+                    "properties" => [
+                        "name" => "Arjun Sharma",
+                        "details" => "SBI - 1234",
+                        "country" => "Indian"
+                    ]
+                ],
+                [
+                    "type" => "payee_item",
+                    "properties" => [
+                        "name" => "Michael Scott",
+                        "details" => "Chase - 9988",
+                        "country" => "USA"
+                    ]
+                ]
+            ]
+        ]
+    ];
+} else if ($id === 'scan_qr') {
+    $screen = [
+        "id" => "scan_qr",
+        "title" => "Scan QR Code",
+        "content" => [
+            "type" => "column",
+            "children" => [
+                [
+                    "type" => "text",
+                    "properties" => [
+                        "text" => "Align QR code within the frame",
+                        "style" => "titleMedium",
+                        "padding" => 16
+                    ]
+                ]
+            ]
+        ]
+    ];
 } else {
     // Fallback or generic error screen
     $screen = [
