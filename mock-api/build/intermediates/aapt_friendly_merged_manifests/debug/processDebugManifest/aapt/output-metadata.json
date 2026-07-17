@@ -4,7 +4,7 @@
     "type": "AAPT_FRIENDLY_MERGED_MANIFESTS",
     "kind": "Directory"
   },
-  "applicationId": "com.anju.dynamic.mock.api",
+  "applicationId": "com.rajkumar.dynamic.mock.api",
   "variantName": "debug",
   "elements": [
     {

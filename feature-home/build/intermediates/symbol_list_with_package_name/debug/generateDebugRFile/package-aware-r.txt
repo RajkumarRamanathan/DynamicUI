@@ -1,1 +1,1 @@
-com.anju.dynamic.feature.home
+com.rajkumar.dynamic.feature.home

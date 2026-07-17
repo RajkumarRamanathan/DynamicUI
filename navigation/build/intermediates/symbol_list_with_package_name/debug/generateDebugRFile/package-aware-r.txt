@@ -1,1 +1,1 @@
-com.anju.dynamic.navigation
+com.rajkumar.dynamic.navigation

@@ -1,1 +1,1 @@
-com.anju.dynamic.feature.balance
+com.rajkumar.dynamic.feature.balance

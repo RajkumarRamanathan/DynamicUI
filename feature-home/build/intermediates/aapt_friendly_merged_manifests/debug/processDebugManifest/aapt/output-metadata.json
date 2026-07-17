@@ -4,7 +4,7 @@
     "type": "AAPT_FRIENDLY_MERGED_MANIFESTS",
     "kind": "Directory"
   },
-  "applicationId": "com.anju.dynamic.feature.home",
+  "applicationId": "com.rajkumar.dynamic.feature.home",
   "variantName": "debug",
   "elements": [
     {

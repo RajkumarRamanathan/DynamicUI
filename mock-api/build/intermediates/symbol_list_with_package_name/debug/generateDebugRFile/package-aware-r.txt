@@ -1,1 +1,1 @@
-com.anju.dynamic.mock.api
+com.rajkumar.dynamic.mock.api

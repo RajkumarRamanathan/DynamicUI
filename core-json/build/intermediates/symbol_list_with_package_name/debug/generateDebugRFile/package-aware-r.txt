@@ -1,1 +1,1 @@
-com.anju.dynamic.core.json
+com.rajkumar.dynamic.core.json

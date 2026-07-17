@@ -1,1 +1,1 @@
-com.anju.dynamic.core.model
+com.rajkumar.dynamic.core.model

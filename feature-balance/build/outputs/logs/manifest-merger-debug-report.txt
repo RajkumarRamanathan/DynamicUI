@@ -1,16 +1,16 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest12320275022962799943.xml:2:13-83
-INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest12320275022962799943.xml:2:13-83
+ADDED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest8312556545978406110.xml:2:13-83
+INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest8312556545978406110.xml:2:13-83
 	package
-		INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest12320275022962799943.xml
+		INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest8312556545978406110.xml
 	xmlns:android
-		ADDED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest12320275022962799943.xml:2:23-81
+		ADDED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest8312556545978406110.xml:2:23-81
 uses-sdk
-INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest12320275022962799943.xml reason: use-sdk injection requested
-INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest12320275022962799943.xml
-INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest12320275022962799943.xml
+INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest8312556545978406110.xml reason: use-sdk injection requested
+INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest8312556545978406110.xml
+INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest8312556545978406110.xml
 	android:targetSdkVersion
-		INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest12320275022962799943.xml
+		INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest8312556545978406110.xml
 	android:minSdkVersion
-		INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest12320275022962799943.xml
+		INJECTED from /Users/apple/AndroidStudioProjects/Dynamic/feature-balance/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest8312556545978406110.xml

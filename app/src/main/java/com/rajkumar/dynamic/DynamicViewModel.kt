@@ -53,10 +53,13 @@ class DynamicViewModel @Inject constructor(
                 "show_send_money" -> "send_money"
                 "show_scan_qr" -> "scan_qr"
                 "go_home" -> "home"
+                "go_admin" -> "admin"
                 else -> null
             }
 
-            if (screenId != null) {
+            if (intent == "go_admin") {
+                navigate("admin")
+            } else if (screenId != null) {
                 loadScreen(screenId)
             } else {
                 _isLoading.value = false
@@ -74,7 +77,12 @@ class DynamicViewModel @Inject constructor(
             lower.contains("send") || lower.contains("transfer") -> "show_send_money"
             lower.contains("scan") || lower.contains("qr") -> "show_scan_qr"
             lower.contains("home") || lower.contains("main") -> "go_home"
+            lower.contains("admin") -> "go_admin"
             else -> "unknown"
         }
+    }
+
+    suspend fun updateBalance(amount: Double): Boolean {
+        return repository.updateBalance(amount)
     }
 }

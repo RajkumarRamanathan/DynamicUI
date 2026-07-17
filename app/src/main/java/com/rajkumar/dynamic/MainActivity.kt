@@ -57,6 +57,9 @@ class MainActivity : ComponentActivity() {
                     composable("scan_qr") {
                         DynamicScreen(screenId = "scan_qr", rendererFactory = rendererFactory)
                     }
+                    composable("admin") {
+                        AdminScreen(onBack = { navController.popBackStack() })
+                    }
                 }
             }
         }
