@@ -16,7 +16,7 @@ class DynamicRepository @Inject constructor() {
     suspend fun getScreen(id: String): Screen {
         return withContext(Dispatchers.IO) {
             try {
-                NetworkModule.client.get("$baseUrl?id=$id").body()
+                NetworkModule.client.get("$baseUrl?id=$id&t=${System.currentTimeMillis()}").body()
             } catch (e: Exception) {
                 e.printStackTrace()
                 Screen(
