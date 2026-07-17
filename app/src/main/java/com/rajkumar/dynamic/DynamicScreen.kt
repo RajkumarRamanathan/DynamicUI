@@ -65,7 +65,7 @@ fun DynamicScreen(
                 modifier = Modifier
                     .fillMaxSize(0.6f)
                     .align(Alignment.Center)
-                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(20)),
+                    .clip(androidx.compose.foundation.shape.CircleShape),
                 alpha = 0.08f,
                 contentScale = androidx.compose.ui.layout.ContentScale.Fit
             )
