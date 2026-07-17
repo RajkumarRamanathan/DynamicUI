@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rajkumar.dynamic.navigation.NavigationManager
 import com.rajkumar.dynamic.theme.BankingTheme
+import com.rajkumar.dynamic.data.UserManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -22,11 +23,15 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var rendererFactory: com.rajkumar.dynamic.core.renderer.RendererFactory
 
+    @Inject
+    lateinit var userManager: UserManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
+            val startDest = if (userManager.getUserName().isNullOrBlank()) "onboarding" else "home"
 
             LaunchedEffect(Unit) {
                 navigationManager.commands.collect { route ->
@@ -35,7 +40,15 @@ class MainActivity : ComponentActivity() {
             }
 
             BankingTheme {
-                NavHost(navController = navController, startDestination = "home") {
+                NavHost(navController = navController, startDestination = startDest) {
+                    composable("onboarding") {
+                        OnboardingScreen(onNameSaved = { name ->
+                            userManager.setUserName(name)
+                            navController.navigate("home") {
+                                popUpTo("onboarding") { inclusive = true }
+                            }
+                        })
+                    }
                     composable("home") {
                         DynamicScreen(screenId = "", rendererFactory = rendererFactory)
                     }

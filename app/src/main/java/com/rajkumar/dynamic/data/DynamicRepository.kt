@@ -13,7 +13,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DynamicRepository @Inject constructor() {
+class DynamicRepository @Inject constructor(private val userManager: UserManager) {
     private val baseUrl = "https://missiongiveback.in/dynamic_api/api/screen.php"
 
     suspend fun getScreen(id: String): Screen {
@@ -39,9 +39,11 @@ class DynamicRepository @Inject constructor() {
     suspend fun getAiScreen(prompt: String, forceRefresh: Boolean = false): Screen {
         return withContext(Dispatchers.IO) {
             try {
-                // URL encode the prompt
+                // URL encode the prompt and username
                 val encodedPrompt = java.net.URLEncoder.encode(prompt, "UTF-8")
-                val aiUrl = "https://missiongiveback.in/dynamic_api/api/ai_screen.php?prompt=$encodedPrompt&refresh=$forceRefresh"
+                val userName = userManager.getUserName() ?: "Alpha Investor"
+                val encodedUserName = java.net.URLEncoder.encode(userName, "UTF-8")
+                val aiUrl = "https://missiongiveback.in/dynamic_api/api/ai_screen.php?prompt=$encodedPrompt&refresh=$forceRefresh&user_name=$encodedUserName"
                 NetworkModule.client.get(aiUrl).body()
             } catch (e: Exception) {
                 e.printStackTrace()

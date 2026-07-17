@@ -44,9 +44,10 @@ if (empty($api_key)) {
 }
 
 $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" . $api_key;
+$user_name = isset($_GET['user_name']) ? urldecode($_GET['user_name']) : 'Alpha Investor';
 
 $mock_user_data = [
-    "user_name" => "Alpha Investor",
+    "user_name" => $user_name,
     "accounts" => [
         ["type" => "Premium Savings Account", "number" => "XXXX-XXXX-9876", "balance" => "₹4,52,890.50"],
         ["type" => "Platinum Credit Card", "number" => "XXXX-XXXX-4409", "balance" => "₹1,20,000.00"]
