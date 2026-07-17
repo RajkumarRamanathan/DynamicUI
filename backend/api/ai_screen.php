@@ -50,7 +50,11 @@ $mock_user_data = [
     "user_name" => $user_name,
     "accounts" => [
         ["type" => "Premium Savings Account", "number" => "XXXX-XXXX-9876", "balance" => "₹4,52,890.50"],
-        ["type" => "Platinum Credit Card", "number" => "XXXX-XXXX-4409", "balance" => "₹1,20,000.00"]
+        ["type" => "Platinum Credit Card", "number" => "XXXX-XXXX-4409", "balance" => "₹1,20,000.00 (Due)"]
+    ],
+    "loans" => [
+        ["type" => "Home Loan", "provider" => "HDFC Bank", "outstanding" => "₹45,00,000", "emi" => "₹35,000", "next_due" => "05 Nov 2023"],
+        ["type" => "Auto Loan", "provider" => "SBI", "outstanding" => "₹6,50,000", "emi" => "₹12,500", "next_due" => "10 Nov 2023"]
     ],
     "goals" => [
         ["name" => "New SUV Fund", "target" => 1500000, "current" => 1080000],
@@ -90,16 +94,17 @@ Supported Widget Types and properties:
 
 CRITICAL INSTRUCTIONS FOR UI GENERATION:
 1. Make the UI EXTREMELY rich, vibrant, and highly detailed using emojis.
-2. We want to test different UI layouts for the SAME data. You MUST use the exact data provided below for the content of your widgets (balances, names, amounts).
-3. Do NOT hallucinate new numbers or transaction names. Use the data provided.
-4. DO radically change the layout, the order, the combinations of widgets (e.g. maybe put bills in a row, or transactions in a column, or use different widget types for different data) each time you are called, to show off different design variations.
-5. Combine multiple different widgets in a `lazy_column` to create a beautiful, comprehensive dashboard.
+2. I have provided a comprehensive 'Real User Data' JSON below containing all their accounts, loans, bills, and transactions.
+3. IMPORTANT: You must filter this data! Only select and display the specific data that is highly relevant to the User Prompt. For example, if they ask about 'loans', show their Home and Auto loans, NOT their Starbucks transactions. If they ask about 'balance', show their Premium Savings account.
+4. Do NOT hallucinate new numbers. Use the exact numbers from the JSON below for whatever category you choose to display.
+5. DO radically change the layout, the order, the combinations of widgets each time you are called, to show off different design variations.
+6. Combine multiple different widgets in a `lazy_column` to create a beautiful, comprehensive dashboard for the requested intent.
 
-=== REAL USER DATA TO DISPLAY ===
+=== REAL USER DATA ===
 $data_json
-=================================
+======================
 
-Based on the User Prompt and the Real User Data, generate a beautiful, appropriate combination of widgets.
+Based on the User Prompt and the Real User Data, pick the relevant data and generate a beautiful, appropriate combination of widgets.
 
 User Prompt: " . $prompt;
 
