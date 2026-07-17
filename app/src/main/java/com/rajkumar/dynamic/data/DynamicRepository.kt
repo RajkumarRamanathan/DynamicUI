@@ -41,9 +41,9 @@ class DynamicRepository @Inject constructor() {
             try {
                 val adminUrl = "https://missiongiveback.in/dynamic_api/api/admin_update.php"
                 val response = NetworkModule.client.post(adminUrl) {
-                    contentType(io.ktor.http.ContentType.Application.Json)
+                    io.ktor.client.request.header("Content-Type", "application/json")
                     setBody(kotlinx.serialization.json.buildJsonObject {
-                        put("balance", newBalance)
+                        put("balance", kotlinx.serialization.json.JsonPrimitive(newBalance))
                     })
                 }
                 response.status.value in 200..299
