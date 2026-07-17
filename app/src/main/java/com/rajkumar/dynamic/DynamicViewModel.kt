@@ -77,13 +77,6 @@ class DynamicViewModel @Inject constructor(
     private fun classifyIntent(query: String): String {
         val lower = query.lowercase()
         return when {
-            lower.contains("balance") || lower.contains("money") || lower.contains("account") -> "show_balance"
-            lower.contains("spend") || lower.contains("chart") || lower.contains("analytics") || lower.contains("graph") -> "show_analytics"
-            lower.contains("history") || lower.contains("statement") || lower.contains("transactions") -> "show_transactions"
-            lower.contains("pay") || lower.contains("bill") -> "show_pay_bills"
-            lower.contains("send") || lower.contains("transfer") -> "show_send_money"
-            lower.contains("scan") || lower.contains("qr") -> "show_scan_qr"
-            lower.contains("home") || lower.contains("main") -> "go_home"
             lower.contains("admin") -> "go_admin"
             else -> "unknown"
         }

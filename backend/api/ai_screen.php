@@ -51,6 +51,12 @@ Supported Widget Types and properties:
 - \"bill_card\": {\"provider\": string, \"amount\": number, \"due_date\": string, \"type\": string, \"card_number\": string}
 - \"analytics_chart\": {\"title\": string, \"data\": [numbers]}
 
+CRITICAL INSTRUCTIONS FOR UI GENERATION:
+1. Make the UI EXTREMELY rich, vibrant, and highly detailed.
+2. Liberally use Emojis in titles, labels, and text to make the UI colorful and engaging! (e.g. 📊 Analytics, 💸 Transfer, ✨ Goals).
+3. Combine multiple different widgets in a `lazy_column` to create a beautiful, comprehensive dashboard for the requested topic. Do not just return one or two widgets. Go all out!
+4. Imagine you are a top-tier UI/UX designer.
+
 Based on the User Prompt, generate a beautiful, appropriate combination of these widgets.
 
 User Prompt: " . $prompt;
