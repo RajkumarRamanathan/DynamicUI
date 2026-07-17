@@ -313,6 +313,68 @@ if ($id === 'home') {
             ]
         ]
     ];
+} else if ($id === 'admin') {
+    $screen = [
+        "id" => "admin",
+        "title" => "Admin Settings",
+        "content" => [
+            "type" => "lazy_column",
+            "children" => [
+                [
+                    "type" => "text",
+                    "properties" => [
+                        "text" => "Update Account Details",
+                        "style" => "titleLarge",
+                        "padding" => 16
+                    ]
+                ],
+                [
+                    "type" => "input_text",
+                    "properties" => [
+                        "id" => "new_balance",
+                        "label" => "New Balance"
+                    ]
+                ],
+                [
+                    "type" => "input_text",
+                    "properties" => [
+                        "id" => "account_type",
+                        "label" => "Account Type"
+                    ]
+                ],
+                [
+                    "type" => "input_radio_group",
+                    "properties" => [
+                        "id" => "theme_color",
+                        "label" => "App Theme Color",
+                        "options" => "Blue, Dark, Light, Green"
+                    ]
+                ],
+                [
+                    "type" => "input_checkbox",
+                    "properties" => [
+                        "id" => "enable_premium",
+                        "label" => "Enable Premium Features"
+                    ]
+                ],
+                [
+                    "type" => "submit_button",
+                    "properties" => [
+                        "label" => "Save Admin Settings",
+                        "form_id" => "admin_balance_update"
+                    ],
+                    "actions" => [
+                        "onClick" => [
+                            "type" => "submit_form",
+                            "payload" => [
+                                "action" => "update_settings"
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ];
 } else {
     // Check if it's a dynamic page
     $stmt = $pdo->prepare("SELECT ui_json FROM dynamic_pages WHERE page_id = :page_id");

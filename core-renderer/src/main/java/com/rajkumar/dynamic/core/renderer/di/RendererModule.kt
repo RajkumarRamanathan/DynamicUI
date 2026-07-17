@@ -98,4 +98,25 @@ object RendererModule {
     @IntoMap
     @StringKey("payee_item")
     fun providePayeeItemRenderer(): WidgetRenderer = PayeeItemRenderer()
+
+    @Provides
+    @IntoMap
+    @StringKey("input_text")
+    fun provideInputTextRenderer(): WidgetRenderer = InputTextRenderer()
+
+    @Provides
+    @IntoMap
+    @StringKey("input_checkbox")
+    fun provideInputCheckboxRenderer(): WidgetRenderer = InputCheckboxRenderer()
+
+    @Provides
+    @IntoMap
+    @StringKey("input_radio_group")
+    fun provideInputRadioGroupRenderer(): WidgetRenderer = InputRadioGroupRenderer()
+
+    @Provides
+    @IntoMap
+    @StringKey("submit_button")
+    fun provideSubmitButtonRenderer(actionHandler: ActionHandler): WidgetRenderer = 
+        SubmitButtonRenderer { actionHandler.handleAction(it) }
 }

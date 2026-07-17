@@ -73,7 +73,12 @@ fun DynamicScreen(
 
             Box(modifier = Modifier.padding(padding)) {
                 if (uiState != null) {
-                    ScreenRenderer(screen = uiState!!, rendererFactory = rendererFactory)
+                    val formState = remember { androidx.compose.runtime.mutableStateMapOf<String, String>() }
+                    androidx.compose.runtime.CompositionLocalProvider(
+                        com.rajkumar.dynamic.core.renderer.LocalFormState provides formState
+                    ) {
+                        ScreenRenderer(screen = uiState!!, rendererFactory = rendererFactory)
+                    }
                 } else if (!isLoading) {
                     // Empty initial state
                     Column(

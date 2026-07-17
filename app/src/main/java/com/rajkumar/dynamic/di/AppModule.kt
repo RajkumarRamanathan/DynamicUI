@@ -21,7 +21,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideActionHandler(
-        navigationManager: NavigationManager
+        navigationManager: NavigationManager,
+        repository: com.rajkumar.dynamic.data.DynamicRepository
     ): ActionHandler {
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
         return object : ActionHandler {
@@ -34,6 +35,13 @@ object AppModule {
                         destination?.let { 
                             scope.launch {
                                 navigationManager.navigate(it)
+                            }
+                        }
+                    }
+                    "submit_form" -> {
+                        action.payload?.let { payload ->
+                            scope.launch {
+                                repository.submitForm(payload)
                             }
                         }
                     }

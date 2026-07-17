@@ -17,6 +17,13 @@ import com.rajkumar.dynamic.core.model.Widget
 import com.rajkumar.dynamic.core.ui.components.ShimmerItem
 import kotlinx.serialization.json.floatOrNull
 import kotlinx.serialization.json.jsonPrimitive
+import androidx.compose.runtime.compositionLocalOf
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+
+val LocalFormState = compositionLocalOf<androidx.compose.runtime.snapshots.SnapshotStateMap<String, String>> { 
+    error("No FormState provided") 
+}
 
 class BalanceCardRenderer(private val onAction: (com.rajkumar.dynamic.core.model.Action) -> Unit) : WidgetRenderer {
     @Composable
@@ -302,6 +309,115 @@ class PayeeItemRenderer : WidgetRenderer {
                 text = if (country == "Indian") "🇮🇳" else "🇺🇸",
                 style = MaterialTheme.typography.headlineSmall
             )
+        }
+    }
+}
+
+class InputTextRenderer : WidgetRenderer {
+    @Composable
+    override fun Render(widget: Widget, rendererFactory: RendererFactory) {
+        val formState = LocalFormState.current
+        val id = widget.properties?.get("id")?.jsonPrimitive?.content ?: return
+        val label = widget.properties?.get("label")?.jsonPrimitive?.content ?: ""
+        val value = formState[id] ?: ""
+
+        OutlinedTextField(
+            value = value,
+            onValueChange = { formState[id] = it },
+            label = { Text(label) },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+            singleLine = true
+        )
+    }
+}
+
+class InputCheckboxRenderer : WidgetRenderer {
+    @Composable
+    override fun Render(widget: Widget, rendererFactory: RendererFactory) {
+        val formState = LocalFormState.current
+        val id = widget.properties?.get("id")?.jsonPrimitive?.content ?: return
+        val label = widget.properties?.get("label")?.jsonPrimitive?.content ?: ""
+        val isChecked = formState[id] == "true"
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = isChecked,
+                onCheckedChange = { formState[id] = it.toString() }
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = label, style = MaterialTheme.typography.bodyLarge)
+        }
+    }
+}
+
+class InputRadioGroupRenderer : WidgetRenderer {
+    @Composable
+    override fun Render(widget: Widget, rendererFactory: RendererFactory) {
+        val formState = LocalFormState.current
+        val id = widget.properties?.get("id")?.jsonPrimitive?.content ?: return
+        val label = widget.properties?.get("label")?.jsonPrimitive?.content ?: ""
+        val optionsStr = widget.properties?.get("options")?.jsonPrimitive?.content ?: ""
+        val options = optionsStr.split(",").map { it.trim() }
+        val selectedOption = formState[id] ?: ""
+
+        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+            if (label.isNotEmpty()) {
+                Text(text = label, style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            options.forEach { option ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { formState[id] = option }
+                        .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = (option == selectedOption),
+                        onClick = { formState[id] = option }
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = option, style = MaterialTheme.typography.bodyLarge)
+                }
+            }
+        }
+    }
+}
+
+class SubmitButtonRenderer(private val onAction: (com.rajkumar.dynamic.core.model.Action) -> Unit) : WidgetRenderer {
+    @Composable
+    override fun Render(widget: Widget, rendererFactory: RendererFactory) {
+        val formState = LocalFormState.current
+        val label = widget.properties?.get("label")?.jsonPrimitive?.content ?: "Submit"
+        val action = widget.actions?.get("onClick")
+
+        Button(
+            onClick = {
+                if (action != null) {
+                    val enrichedPayload = mutableMapOf<String, kotlinx.serialization.json.JsonElement>()
+                    action.payload?.forEach { (k, v) -> enrichedPayload[k] = v }
+                    
+                    val formData = mutableMapOf<String, kotlinx.serialization.json.JsonElement>()
+                    formState.forEach { (k, v) ->
+                        formData[k] = kotlinx.serialization.json.JsonPrimitive(v)
+                    }
+                    enrichedPayload["formData"] = kotlinx.serialization.json.JsonObject(formData)
+
+                    val enrichedAction = action.copy(
+                        payload = kotlinx.serialization.json.JsonObject(enrichedPayload)
+                    )
+                    onAction(enrichedAction)
+                }
+            },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            Text(label)
         }
     }
 }

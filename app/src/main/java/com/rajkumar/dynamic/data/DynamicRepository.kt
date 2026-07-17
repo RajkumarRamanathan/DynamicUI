@@ -100,4 +100,19 @@ class DynamicRepository @Inject constructor(private val userManager: UserManager
             }
         }
     }
+    suspend fun submitForm(payload: kotlinx.serialization.json.JsonObject): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val submitUrl = "https://missiongiveback.in/dynamic_api/api/submit_form.php"
+                val response = NetworkModule.client.post(submitUrl) {
+                    header("Content-Type", "application/json")
+                    setBody(payload)
+                }
+                response.status.value in 200..299
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
+    }
 }
