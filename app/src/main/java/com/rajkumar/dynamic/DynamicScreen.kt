@@ -63,7 +63,8 @@ fun DynamicScreen(
                 contentDescription = "App Watermark",
                 modifier = Modifier
                     .fillMaxSize(0.6f)
-                    .align(Alignment.Center),
+                    .align(Alignment.Center)
+                    .androidx.compose.ui.draw.clip(androidx.compose.foundation.shape.RoundedCornerShape(20)),
                 alpha = 0.08f,
                 contentScale = androidx.compose.ui.layout.ContentScale.Fit
             )
