@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
             BankingTheme {
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
-                        DynamicScreen(screenId = "home", rendererFactory = rendererFactory)
+                        DynamicScreen(screenId = "", rendererFactory = rendererFactory)
                     }
                     composable("balance_details") {
                         DynamicScreen(screenId = "balance", rendererFactory = rendererFactory)

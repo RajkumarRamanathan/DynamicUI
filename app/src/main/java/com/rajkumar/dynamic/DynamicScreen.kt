@@ -34,7 +34,9 @@ fun DynamicScreen(
     var showInfo by remember { mutableStateOf(false) }
 
     LaunchedEffect(screenId) {
-        viewModel.loadScreen(screenId)
+        if (screenId.isNotBlank()) {
+            viewModel.loadScreen(screenId)
+        }
     }
 
     Scaffold(
