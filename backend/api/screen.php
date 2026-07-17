@@ -312,19 +312,30 @@ if ($id === 'home') {
         ]
     ];
 } else {
-    // Fallback or generic error screen
-    $screen = [
-        "id" => "error",
-        "title" => "Error",
-        "content" => [
-            "type" => "text",
-            "properties" => [
-                "text" => "Screen not found.",
-                "style" => "titleLarge",
-                "padding" => 16
+    // Check if it's a dynamic page
+    $stmt = $pdo->prepare("SELECT ui_json FROM dynamic_pages WHERE page_id = :page_id");
+    $stmt->execute(['page_id' => $id]);
+    $dynamic_page = $stmt->fetch();
+
+    if ($dynamic_page) {
+        // Output the raw JSON string and exit immediately since it's already encoded
+        echo $dynamic_page['ui_json'];
+        exit;
+    } else {
+        // Fallback or generic error screen
+        $screen = [
+            "id" => "error",
+            "title" => "Error",
+            "content" => [
+                "type" => "text",
+                "properties" => [
+                    "text" => "Screen not found.",
+                    "style" => "titleLarge",
+                    "padding" => 16
+                ]
             ]
-        ]
-    ];
+        ];
+    }
 }
 
 echo json_encode($screen);

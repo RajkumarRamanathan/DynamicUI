@@ -54,6 +54,7 @@ class DynamicViewModel @Inject constructor(
                 "show_scan_qr" -> "scan_qr"
                 "go_home" -> "home"
                 "go_admin" -> "admin"
+                "unknown" -> query.trim().lowercase().replace(" ", "_")
                 else -> null
             }
 
@@ -84,5 +85,9 @@ class DynamicViewModel @Inject constructor(
 
     suspend fun updateBalance(amount: Double): Boolean {
         return repository.updateBalance(amount)
+    }
+
+    suspend fun createPage(pageId: String, title: String, content: String): Boolean {
+        return repository.createPage(pageId, title, content)
     }
 }

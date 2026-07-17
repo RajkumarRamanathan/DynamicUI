@@ -57,3 +57,10 @@ INSERT INTO bills (user_id, provider, amount, due_date, card_or_phone_number, ty
 
 INSERT INTO payees (user_id, name, details, country) VALUES (1, 'Arjun Sharma', 'SBI - 1234', 'Indian');
 INSERT INTO payees (user_id, name, details, country) VALUES (1, 'Michael Scott', 'Chase - 9988', 'USA');
+
+CREATE TABLE IF NOT EXISTS dynamic_pages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    page_id VARCHAR(50) UNIQUE NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    ui_json TEXT NOT NULL
+);

@@ -53,4 +53,24 @@ class DynamicRepository @Inject constructor() {
             }
         }
     }
+
+    suspend fun createPage(pageId: String, title: String, content: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val adminUrl = "https://missiongiveback.in/dynamic_api/api/admin_create_page.php"
+                val response = NetworkModule.client.post(adminUrl) {
+                    header("Content-Type", "application/json")
+                    setBody(kotlinx.serialization.json.buildJsonObject {
+                        put("page_id", kotlinx.serialization.json.JsonPrimitive(pageId))
+                        put("title", kotlinx.serialization.json.JsonPrimitive(title))
+                        put("content", kotlinx.serialization.json.JsonPrimitive(content))
+                    })
+                }
+                response.status.value in 200..299
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
+    }
 }

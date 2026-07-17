@@ -19,6 +19,11 @@ fun AdminScreen(
     var newBalance by remember { mutableStateOf("") }
     var isSubmitting by remember { mutableStateOf(false) }
     var successMessage by remember { mutableStateOf<String?>(null) }
+    
+    var newPageId by remember { mutableStateOf("") }
+    var newPageTitle by remember { mutableStateOf("") }
+    var newPageContent by remember { mutableStateOf("") }
+    
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -84,6 +89,69 @@ fun AdminScreen(
                     color = if (successMessage!!.contains("successfully")) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyLarge
                 )
+            }
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            Text("Create Dynamic Page", style = MaterialTheme.typography.titleLarge)
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            OutlinedTextField(
+                value = newPageId,
+                onValueChange = { newPageId = it },
+                label = { Text("Page ID (e.g. loan)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            OutlinedTextField(
+                value = newPageTitle,
+                onValueChange = { newPageTitle = it },
+                label = { Text("Page Title (e.g. Loan Apply)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            OutlinedTextField(
+                value = newPageContent,
+                onValueChange = { newPageContent = it },
+                label = { Text("Page Content") },
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 3
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Button(
+                onClick = {
+                    scope.launch {
+                        isSubmitting = true
+                        val success = viewModel.createPage(newPageId, newPageTitle, newPageContent)
+                        isSubmitting = false
+                        if (success) {
+                            successMessage = "Page '$newPageId' created successfully!"
+                            newPageId = ""
+                            newPageTitle = ""
+                            newPageContent = ""
+                        } else {
+                            successMessage = "Failed to create page."
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !isSubmitting && newPageId.isNotBlank() && newPageTitle.isNotBlank() && newPageContent.isNotBlank()
+            ) {
+                if (isSubmitting) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                } else {
+                    Text("Create Page")
+                }
             }
         }
     }
