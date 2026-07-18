@@ -31,8 +31,10 @@ try {
     if ($action === 'submit_dynamic_data' && !empty($pageId)) {
         $table_name = "data_" . $pageId;
         
-        $stmt = $pdo->prepare("SELECT id FROM `$table_name` WHERE user_id = 1");
-        $stmt->execute();
+$user_id = isset($input['user_id']) ? (int)$input['user_id'] : 1;
+        
+        $stmt = $pdo->prepare("SELECT id FROM `$table_name` WHERE user_id = :uid");
+        $stmt->execute(['uid' => $user_id]);
         $row = $stmt->fetch();
         
         $columns = [];
@@ -54,13 +56,14 @@ try {
                 $clean_col = str_replace('`', '', $col);
                 $setClause[] = "$col = :$clean_col";
             }
-            $sql = "UPDATE `$table_name` SET " . implode(", ", $setClause) . " WHERE user_id = 1";
+            $sql = "UPDATE `$table_name` SET " . implode(", ", $setClause) . " WHERE user_id = :uid";
+            $values[':uid'] = $user_id;
             $updateStmt = $pdo->prepare($sql);
             $updateStmt->execute($values);
         } else {
             $columns[] = "`user_id`";
             $placeholders[] = ":user_id";
-            $values[':user_id'] = 1;
+            $values[':user_id'] = $user_id;
             
             $sql = "INSERT INTO `$table_name` (" . implode(", ", $columns) . ") VALUES (" . implode(", ", $placeholders) . ")";
             $insertStmt = $pdo->prepare($sql);

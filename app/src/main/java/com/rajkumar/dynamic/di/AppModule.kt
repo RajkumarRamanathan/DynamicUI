@@ -22,7 +22,8 @@ object AppModule {
     @Singleton
     fun provideActionHandler(
         navigationManager: NavigationManager,
-        repository: com.rajkumar.dynamic.data.DynamicRepository
+        repository: com.rajkumar.dynamic.data.DynamicRepository,
+        userManager: com.rajkumar.dynamic.data.UserManager
     ): ActionHandler {
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
         return object : ActionHandler {
@@ -30,6 +31,8 @@ object AppModule {
                 when (action.type) {
                     "navigate" -> {
                         val destination = action.payload?.get("destination")?.let {
+                            if (it is JsonPrimitive) it.content else null
+                        } ?: action.payload?.get("screen_id")?.let {
                             if (it is JsonPrimitive) it.content else null
                         }
                         destination?.let { 
@@ -41,7 +44,10 @@ object AppModule {
                     "submit_form" -> {
                         action.payload?.let { payload ->
                             scope.launch {
-                                repository.submitForm(payload)
+                                val mutablePayload = payload.toMutableMap()
+                                mutablePayload["user_id"] = JsonPrimitive(userManager.getUserId())
+                                mutablePayload["user_name"] = JsonPrimitive(userManager.getUserName() ?: "User")
+                                repository.submitForm(kotlinx.serialization.json.JsonObject(mutablePayload))
                             }
                         }
                     }
@@ -84,6 +90,7 @@ object AppModule {
                             val payload = kotlinx.serialization.json.buildJsonObject {
                                 put("title", kotlinx.serialization.json.JsonPrimitive(title))
                                 put("fields", kotlinx.serialization.json.JsonPrimitive(fieldsJson))
+                                put("user_id", kotlinx.serialization.json.JsonPrimitive(userManager.getUserId()))
                             }
                             scope.launch {
                                 val pageId = repository.createPage(payload)

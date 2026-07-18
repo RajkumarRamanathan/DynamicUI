@@ -23,8 +23,10 @@ class DynamicRepository @Inject constructor(private val userManager: UserManager
         return withContext(Dispatchers.IO) {
             try {
                 val userName = userManager.getUserName() ?: "User"
+                val userId = userManager.getUserId()
+                val role = userManager.getRole()
                 val encodedUserName = java.net.URLEncoder.encode(userName, "UTF-8")
-                NetworkModule.client.get("$baseUrl?id=$id&t=${System.currentTimeMillis()}&user_name=$encodedUserName").body()
+                NetworkModule.client.get("$baseUrl?id=$id&t=${System.currentTimeMillis()}&user_name=$encodedUserName&user_id=$userId&role=$role").body()
             } catch (e: Exception) {
                 e.printStackTrace()
                 Screen(

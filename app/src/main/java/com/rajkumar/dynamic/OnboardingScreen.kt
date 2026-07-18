@@ -5,15 +5,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnboardingScreen(
-    onNameSaved: (String) -> Unit
+    onLoginSuccess: (Int, String, String) -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-    var showError by remember { mutableStateOf(false) }
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -29,29 +40,41 @@ fun OnboardingScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "What should we call you?",
+                text = "Login or Register",
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
             
             OutlinedTextField(
-                value = name,
+                value = username,
                 onValueChange = { 
-                    name = it
-                    showError = false
+                    username = it
+                    errorMessage = null
                 },
-                label = { Text("Your Name") },
-                isError = showError,
+                label = { Text("Username") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
             
-            if (showError) {
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            OutlinedTextField(
+                value = password,
+                onValueChange = { 
+                    password = it
+                    errorMessage = null
+                },
+                label = { Text("Password") },
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            if (errorMessage != null) {
                 Text(
-                    text = "Name cannot be empty",
+                    text = errorMessage!!,
                     color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(top = 4.dp).align(Alignment.Start)
+                    modifier = Modifier.padding(top = 8.dp)
                 )
             }
             
@@ -59,15 +82,59 @@ fun OnboardingScreen(
             
             Button(
                 onClick = {
-                    if (name.isNotBlank()) {
-                        onNameSaved(name.trim())
+                    if (username.isNotBlank() && password.isNotBlank()) {
+                        isLoading = true
+                        errorMessage = null
+                        coroutineScope.launch {
+                            try {
+                                val result = withContext(Dispatchers.IO) {
+                                    val url = URL("https://missiongiveback.in/dynamic_api/api/login.php")
+                                    val connection = url.openConnection() as HttpURLConnection
+                                    connection.requestMethod = "POST"
+                                    connection.setRequestProperty("Content-Type", "application/json")
+                                    connection.doOutput = true
+                                    
+                                    val payload = JSONObject().apply {
+                                        put("username", username)
+                                        put("password", password)
+                                    }.toString()
+                                    
+                                    OutputStreamWriter(connection.outputStream).use { it.write(payload) }
+                                    
+                                    val responseCode = connection.responseCode
+                                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                                        val response = connection.inputStream.bufferedReader().readText()
+                                        JSONObject(response)
+                                    } else {
+                                        null
+                                    }
+                                }
+                                
+                                isLoading = false
+                                if (result != null && result.getBoolean("success")) {
+                                    val userId = result.getInt("user_id")
+                                    val role = result.getString("role")
+                                    onLoginSuccess(userId, username, role)
+                                } else {
+                                    errorMessage = result?.optString("message", "Login failed") ?: "Network error"
+                                }
+                            } catch (e: Exception) {
+                                isLoading = false
+                                errorMessage = e.message ?: "An error occurred"
+                            }
+                        }
                     } else {
-                        showError = true
+                        errorMessage = "Please enter username and password"
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !isLoading
             ) {
-                Text("Get Started")
+                if (isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+                } else {
+                    Text("Login")
+                }
             }
         }
     }

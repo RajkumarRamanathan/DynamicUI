@@ -14,7 +14,23 @@ class UserManager @Inject constructor(@ApplicationContext context: Context) {
         return prefs.getString("user_name", null)
     }
 
+    fun getUserId(): Int {
+        return prefs.getInt("user_id", -1)
+    }
+    
+    fun getRole(): String {
+        return prefs.getString("user_role", "user") ?: "user"
+    }
+
     fun setUserName(name: String) {
         prefs.edit().putString("user_name", name).apply()
+    }
+    
+    fun saveUser(id: Int, name: String, role: String) {
+        prefs.edit()
+            .putInt("user_id", id)
+            .putString("user_name", name)
+            .putString("user_role", role)
+            .apply()
     }
 }

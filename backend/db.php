@@ -15,6 +15,15 @@ $options = [
 
 try {
      $pdo = new PDO($dsn, $user, $pass, $options);
+     
+     // Ensure users table exists
+     $pdo->exec("CREATE TABLE IF NOT EXISTS users (
+         id INT AUTO_INCREMENT PRIMARY KEY,
+         username VARCHAR(255) UNIQUE NOT NULL,
+         password VARCHAR(255) NOT NULL,
+         role VARCHAR(50) DEFAULT 'user',
+         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+     )");
 } catch (\PDOException $e) {
      throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }

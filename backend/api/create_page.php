@@ -81,7 +81,7 @@ try {
     
     // Generate and execute CREATE TABLE query
     $table_name = "data_" . $page_id;
-    $columns = ["id INT AUTO_INCREMENT PRIMARY KEY", "user_id INT DEFAULT 1"];
+    $columns = ["id INT AUTO_INCREMENT PRIMARY KEY", "user_id INT DEFAULT NULL"];
     foreach ($fields as $field) {
         $col_name = preg_replace('/[^a-zA-Z0-9_]/', '', $field['id'] ?? '');
         if (!empty($col_name)) {

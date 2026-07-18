@@ -42,8 +42,8 @@ class MainActivity : ComponentActivity() {
             BankingTheme {
                 NavHost(navController = navController, startDestination = startDest) {
                     composable("onboarding") {
-                        OnboardingScreen(onNameSaved = { name ->
-                            userManager.setUserName(name)
+                        OnboardingScreen(onLoginSuccess = { id, name, role ->
+                            userManager.saveUser(id, name, role)
                             navController.navigate("home") {
                                 popUpTo("onboarding") { inclusive = true }
                             }

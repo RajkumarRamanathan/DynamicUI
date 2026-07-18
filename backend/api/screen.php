@@ -6,16 +6,19 @@ require_once '../db.php';
 
 header('Content-Type: application/json');
 
-$id = $_GET['id'] ?? 'home';
+$id = $_GET['id'] ?? '';
+if (empty($id)) $id = 'home';
+$user_id = $_GET['user_id'] ?? 1;
+$role = $_GET['role'] ?? 'user';
 
-function createQuickAction($label, $action) {
+function createQuickAction($label, $action, $isScreenId = false) {
     return [
         "type" => "quick_action",
         "properties" => ["label" => $label],
         "actions" => [
             "onClick" => [
                 "type" => "navigate",
-                "payload" => ["destination" => $action]
+                "payload" => $isScreenId ? ["screen_id" => $action] : ["destination" => $action]
             ]
         ]
     ];
@@ -36,85 +39,140 @@ function createTransaction($title, $subtitle, $amount, $date) {
 $screen = [];
 
 if ($id === 'home') {
-    // Fetch data from DB for user 1
-    $stmt = $pdo->query("SELECT * FROM users WHERE id = 1");
-    $user = $stmt->fetch();
-    
-    $stmt = $pdo->query("SELECT * FROM accounts WHERE user_id = 1");
-    $accounts = $stmt->fetchAll();
-    
-    $stmt = $pdo->query("SELECT * FROM transactions WHERE account_id = 1 LIMIT 3");
-    $transactions = $stmt->fetchAll();
-
-    $children = [];
-    
-    if (count($accounts) > 0) {
-        $acc = $accounts[0];
-        $children[] = [
-            "type" => "balance_card",
-            "properties" => [
-                "balance" => "₹" . number_format($acc['balance'], 2),
-                "account_number" => $acc['account_number'],
-                "account_type" => $acc['account_type']
-            ],
-            "actions" => [
-                "onClick" => [
-                    "type" => "navigate",
-                    "payload" => ["destination" => "balance_details"]
+    if ($role === 'admin') {
+        // Admin Dashboard: Form Builder
+        $screen = [
+            "id" => "home",
+            "title" => "Admin Dashboard",
+            "content" => [
+                "type" => "lazy_column",
+                "children" => [
+                    [
+                        "type" => "text",
+                        "properties" => [
+                            "text" => "Create a new dynamic form page:",
+                            "style" => "titleMedium",
+                            "padding" => 16
+                        ]
+                    ],
+                    [
+                        "type" => "input_text",
+                        "properties" => [
+                            "id" => "page_title",
+                            "label" => "Page Title (e.g. New Payee)"
+                        ]
+                    ],
+                    [
+                        "type" => "form_builder",
+                        "properties" => [
+                            "id" => "form_builder_fields",
+                            "initial_fields" => []
+                        ]
+                    ],
+                    [
+                        "type" => "submit_button",
+                        "properties" => [
+                            "label" => "Create Page",
+                            "form_id" => "create_page_form"
+                        ],
+                        "actions" => [
+                            "onClick" => [
+                                "type" => "create_page",
+                                "payload" => [
+                                    "title_field" => "page_title"
+                                ]
+                            ]
+                        ]
+                    ]
                 ]
             ]
         ];
-    }
-    
-    $children[] = [
-        "type" => "row",
-        "properties" => ["padding" => 16],
-        "children" => [
-            createQuickAction("Send", "send_money"),
-            createQuickAction("Pay", "pay_bills"),
-            createQuickAction("Scan", "scan_qr"),
-            createQuickAction("Analytics", "analytics"),
-            createQuickAction("History", "transaction_history")
-        ]
-    ];
-    
-    $children[] = [
-        "type" => "text",
-        "properties" => [
-            "text" => "Recent Transactions",
-            "style" => "titleLarge",
-            "padding" => 16
-        ]
-    ];
-    
-    if (count($accounts) > 1 && $user['is_premium']) {
-        $acc = $accounts[1];
+    } else {
+        // User Dashboard
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :uid");
+        $stmt->execute(['uid' => $user_id]);
+        $user = $stmt->fetch();
+        
+        $stmt = $pdo->prepare("SELECT * FROM accounts WHERE user_id = :uid");
+        $stmt->execute(['uid' => $user_id]);
+        $accounts = $stmt->fetchAll();
+        
+        if (!$accounts) {
+            $accounts = [
+                ["type" => "Savings", "account_number" => "123456789", "balance" => 0.0]
+            ];
+        }
+        
+        $account_id = $accounts[0]['id'] ?? 1;
+        $stmt = $pdo->prepare("SELECT * FROM transactions WHERE account_id = :aid LIMIT 3");
+        $stmt->execute(['aid' => $account_id]);
+        $transactions = $stmt->fetchAll();
+
+        $children = [];
+        
         $children[] = [
-            "type" => "balance_card",
-            "visibility" => "is_premium==true",
-            "animation" => "expand",
+            "type" => "text",
             "properties" => [
-                "balance" => "₹" . number_format($acc['balance'], 2),
-                "account_number" => $acc['account_number'],
-                "account_type" => $acc['account_type']
+                "text" => "Welcome back, " . ($user['username'] ?? "User"),
+                "style" => "titleLarge",
+                "padding" => 16
+            ]
+        ];
+
+        foreach ($accounts as $acc) {
+            $children[] = [
+                "type" => "balance_card",
+                "properties" => [
+                    "balance" => "₹" . number_format($acc['balance'], 2),
+                    "account_number" => $acc['account_number'],
+                    "account_type" => $acc['type'] ?? 'Savings'
+                ]
+            ];
+        }
+
+        // Quick Actions
+        $quick_actions = [
+            createQuickAction("Statement", "statement"),
+            createQuickAction("Analytics", "analytics"),
+            createQuickAction("Pay Bills", "pay_bills")
+        ];
+
+        try {
+            $dynStmt = $pdo->query("SELECT page_id, title FROM dynamic_pages ORDER BY created_at DESC");
+            $dynamicPages = $dynStmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($dynamicPages as $page) {
+                $quick_actions[] = createQuickAction($page['title'], $page['page_id'], true);
+            }
+        } catch (PDOException $e) {}
+
+        $children[] = [
+            "type" => "row",
+            "properties" => ["padding" => 16],
+            "children" => $quick_actions
+        ];
+        
+        $children[] = [
+            "type" => "text",
+            "properties" => [
+                "text" => "Recent Transactions",
+                "style" => "titleLarge",
+                "padding" => 16
+            ]
+        ];
+        
+        foreach ($transactions as $txn) {
+            $children[] = createTransaction($txn['merchant'] ?? 'Unknown', $txn['category'] ?? 'General', $txn['amount'] ?? 0, $txn['date_str'] ?? 'Today');
+        }
+        
+        $screen = [
+            "id" => "home",
+            "title" => "Banking App",
+            "content" => [
+                "type" => "lazy_column",
+                "children" => $children
             ]
         ];
     }
-    
-    foreach ($transactions as $txn) {
-        $children[] = createTransaction($txn['merchant'], $txn['category'], $txn['amount'], $txn['date_str']);
-    }
-    
-    $userName = isset($_GET['user_name']) ? urldecode($_GET['user_name']) : $user['name'];
-    
-    $screen = [
-        "id" => "home",
-        "title" => "Good Morning, " . $userName,
-        "content" => [
-            "type" => "lazy_column",
-            "children" => $children
-        ]
-    ];
 } else if ($id === 'statement') {
     $stmt = $pdo->query("SELECT * FROM transactions WHERE account_id = 1");
     $transactions = $stmt->fetchAll();
