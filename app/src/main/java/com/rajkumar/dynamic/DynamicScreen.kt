@@ -42,11 +42,29 @@ fun DynamicScreen(
         }
     }
 
-    val context = androidx.compose.ui.platform.LocalContext.current
+    var errorAlertMessage by remember { mutableStateOf<String?>(null) }
+    
     LaunchedEffect(Unit) {
         viewModel.errorEvent.collect { errorMessage ->
-            android.widget.Toast.makeText(context, errorMessage, android.widget.Toast.LENGTH_LONG).show()
+            errorAlertMessage = errorMessage
         }
+    }
+
+    if (errorAlertMessage != null) {
+        AlertDialog(
+            onDismissRequest = { errorAlertMessage = null },
+            icon = { Icon(Icons.Filled.Info, contentDescription = "Alert", tint = MaterialTheme.colorScheme.primary) },
+            title = { Text("Notice") },
+            text = { Text(errorAlertMessage ?: "") },
+            confirmButton = {
+                TextButton(onClick = { errorAlertMessage = null }) {
+                    Text("Got it")
+                }
+            },
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            titleContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 
     Scaffold(
