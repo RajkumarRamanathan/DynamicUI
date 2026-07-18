@@ -138,7 +138,7 @@ if ($id === 'home') {
         ];
 
         try {
-            $dynStmt = $pdo->query("SELECT page_id, title FROM dynamic_pages ORDER BY created_at DESC");
+            $dynStmt = $pdo->query("SELECT page_id, title FROM dynamic_pages ORDER BY id DESC");
             $dynamicPages = $dynStmt->fetchAll(PDO::FETCH_ASSOC);
             foreach ($dynamicPages as $page) {
                 $quick_actions[] = createQuickAction($page['title'], $page['page_id'], true);
