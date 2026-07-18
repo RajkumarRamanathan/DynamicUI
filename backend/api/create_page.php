@@ -69,7 +69,7 @@ $ui_json = [
 
 $ui_json_string = json_encode($ui_json);
 
-require 'db.php'; // Ensure db.php is accessible and sets up $pdo
+require '../db.php'; // Ensure db.php is accessible and sets up $pdo
 
 try {
     $stmt = $pdo->prepare("INSERT INTO dynamic_pages (page_id, title, ui_json) VALUES (:page_id, :title, :ui_json)");

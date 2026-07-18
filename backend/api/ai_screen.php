@@ -72,7 +72,7 @@ $mock_user_data = [
 ];
 $data_json = json_encode($mock_user_data, JSON_PRETTY_PRINT);
 
-require_once 'db.php';
+require_once '../db.php';
 
 $stmt = $pdo->query("SELECT page_id, title FROM dynamic_pages ORDER BY created_at DESC");
 $existing_pages = $stmt->fetchAll(PDO::FETCH_ASSOC);
