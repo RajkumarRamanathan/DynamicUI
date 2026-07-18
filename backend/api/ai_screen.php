@@ -96,6 +96,11 @@ Supported Widget Types and properties:
 - \"quick_action\": {\"label\": string}
 - \"transaction_item\": {\"title\": string, \"subtitle\": string, \"amount\": number, \"date\": string}
 - \"bill_card\": {\"provider\": string, \"amount\": number, \"due_date\": string, \"type\": string, \"card_number\": string}
+- \"form_builder\": {\"id\": \"string\", \"initial_fields\": [{\"id\": \"field_id\", \"label\": \"Field Label\", \"type\": \"input_text\"}]}
+- \"input_text\": {\"id\": \"string\", \"label\": \"string\"}
+- \"input_radio_group\": {\"id\": \"string\", \"label\": \"string\", \"options\": \"option1,option2\"}
+- \"input_checkbox\": {\"id\": \"string\", \"label\": \"string\"}
+- \"submit_button\": {\"label\": \"string\", \"form_id\": \"string\"}
 
 CRITICAL INSTRUCTIONS FOR UI GENERATION:
 1. Make the UI EXTREMELY rich, vibrant, and highly detailed using emojis.
@@ -147,18 +152,9 @@ $response_data = json_decode($response, true);
 $ai_text = $response_data['candidates'][0]['content']['parts'][0]['text'] ?? '';
 
 // Strip Markdown formatting if AI included it anyway
-$ai_text = trim($ai_text);
-if (strpos($ai_text, '```json') === 0) {
-    $ai_text = substr($ai_text, 7);
-    if (substr($ai_text, -3) === '```') {
-        $ai_text = substr($ai_text, 0, -3);
-    }
-} else if (strpos($ai_text, '```') === 0) {
-    $ai_text = substr($ai_text, 3);
-    if (substr($ai_text, -3) === '```') {
-        $ai_text = substr($ai_text, 0, -3);
-    }
-}
+$ai_text = preg_replace('/^```json\s*/i', '', trim($ai_text));
+$ai_text = preg_replace('/^```\s*/', '', $ai_text);
+$ai_text = preg_replace('/\s*```$/', '', $ai_text);
 $ai_text = trim($ai_text);
 
 // Validate JSON
