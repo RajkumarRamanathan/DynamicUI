@@ -42,6 +42,13 @@ fun DynamicScreen(
         }
     }
 
+    val context = androidx.compose.ui.platform.LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.errorEvent.collect { errorMessage ->
+            android.widget.Toast.makeText(context, errorMessage, android.widget.Toast.LENGTH_LONG).show()
+        }
+    }
+
     Scaffold(
         floatingActionButton = {
             if (!showChat && !isLoading) {

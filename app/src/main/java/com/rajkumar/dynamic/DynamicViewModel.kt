@@ -23,19 +23,30 @@ class DynamicViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private val _errorEvent = kotlinx.coroutines.flow.MutableSharedFlow<String>()
+    val errorEvent: kotlinx.coroutines.flow.SharedFlow<String> = _errorEvent
+
     fun loadScreen(screenId: String, isAiPrompt: Boolean = false, forceRefresh: Boolean = false) {
         viewModelScope.launch {
             if (forceRefresh) {
                 _uiState.value = null
             }
             _isLoading.value = true
-            val screen = if (isAiPrompt) {
-                repository.getAiScreen(screenId, forceRefresh)
-            } else {
-                repository.getScreen(screenId)
+            try {
+                val screen = if (isAiPrompt) {
+                    repository.getAiScreen(screenId, forceRefresh)
+                } else {
+                    repository.getScreen(screenId)
+                }
+                _uiState.value = screen
+            } catch (e: Exception) {
+                _errorEvent.emit(e.message ?: "Unknown error")
+                if (_uiState.value == null) {
+                    // Navigate back or show empty state if initial load failed
+                }
+            } finally {
+                _isLoading.value = false
             }
-            _uiState.value = screen
-            _isLoading.value = false
         }
     }
 

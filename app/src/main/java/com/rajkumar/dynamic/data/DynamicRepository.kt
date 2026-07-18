@@ -29,16 +29,7 @@ class DynamicRepository @Inject constructor(private val userManager: UserManager
                 NetworkModule.client.get("$baseUrl?id=$id&t=${System.currentTimeMillis()}&user_name=$encodedUserName&user_id=$userId&role=$role").body()
             } catch (e: Exception) {
                 e.printStackTrace()
-                Screen(
-                    id = "error",
-                    title = "Network Error",
-                    content = com.rajkumar.dynamic.core.model.Widget(
-                        type = "text",
-                        properties = kotlinx.serialization.json.buildJsonObject {
-                            put("text", kotlinx.serialization.json.JsonPrimitive(e.localizedMessage ?: "Failed to connect to server"))
-                        }
-                    )
-                )
+                throw Exception("Failed to load screen: ${e.localizedMessage}")
             }
         }
     }
@@ -51,19 +42,20 @@ class DynamicRepository @Inject constructor(private val userManager: UserManager
                 val userName = userManager.getUserName() ?: "Alpha Investor"
                 val encodedUserName = java.net.URLEncoder.encode(userName, "UTF-8")
                 val aiUrl = "https://missiongiveback.in/dynamic_api/api/ai_screen.php?prompt=$encodedPrompt&refresh=$forceRefresh&user_name=$encodedUserName"
-                NetworkModule.client.get(aiUrl).body()
+                val response = NetworkModule.client.get(aiUrl)
+                if (response.status.value in 200..299) {
+                    response.body()
+                } else {
+                    val errorText = response.bodyAsText()
+                    val errorJson = try {
+                        kotlinx.serialization.json.Json.parseToJsonElement(errorText).jsonObject
+                    } catch (e: Exception) { null }
+                    val errorMessage = errorJson?.get("error")?.jsonPrimitive?.content ?: "Failed to generate AI UI"
+                    throw Exception(errorMessage)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Screen(
-                    id = "error",
-                    title = "AI Error",
-                    content = com.rajkumar.dynamic.core.model.Widget(
-                        type = "text",
-                        properties = kotlinx.serialization.json.buildJsonObject {
-                            put("text", kotlinx.serialization.json.JsonPrimitive("Failed to generate UI: ${e.localizedMessage}"))
-                        }
-                    )
-                )
+                throw Exception(e.message ?: "Network error")
             }
         }
     }

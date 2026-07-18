@@ -113,6 +113,7 @@ $pages_json
 ======================
 If the user's prompt matches the intent of any of these existing pages (e.g. asking to fill out a form or view a page related to these titles), you MUST return a UI containing a `text` widget acknowledging their request and a `quick_action` widget. The `quick_action` widget must have `actions` -> `onClick` -> `type: \"navigate\"` and `payload: {\"screen_id\": \"<THE_PAGE_ID_FROM_EXISTING_PAGES>\"}`.
 6. Combine multiple different widgets in a `lazy_column` to create a beautiful, comprehensive dashboard for the requested intent.
+7. If the user prompt is completely unrelated to banking, and does not match any of the existing pages or their intent, you MUST return a JSON object with a single 'error' key: `{\"error\": \"No matching content found\"}`. Do NOT generate a UI for non-banking queries.
 
 === REAL USER DATA ===
 $data_json
@@ -162,6 +163,11 @@ $decoded = json_decode($ai_text, true);
 if (json_last_error() !== JSON_ERROR_NONE) {
     http_response_code(500);
     echo json_encode(["error" => "Invalid JSON from AI", "raw" => $ai_text]);
+    exit;
+}
+if (isset($decoded['error'])) {
+    http_response_code(400);
+    echo json_encode(["error" => $decoded['error']]);
     exit;
 }
 
