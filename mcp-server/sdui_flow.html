@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic AI UI (SDUI) Generation Flow</title>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: white;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        h1 { margin-bottom: 10px; text-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
+        p { color: #94a3b8; margin-bottom: 40px; }
+
+        .architecture-container {
+            position: relative;
+            width: 1000px;
+            height: 500px;
+            background: #1e293b;
+            border-radius: 20px;
+            border: 1px solid #334155;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .node {
+            position: absolute;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+            z-index: 2;
+        }
+        
+        /* Layout */
+        .node-android { top: 220px; left: 50px; background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .node-php { top: 220px; left: 350px; background: linear-gradient(135deg, #818cf8, #6366f1); }
+        .node-db { top: 380px; left: 350px; background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .node-gemini { top: 220px; left: 750px; background: linear-gradient(135deg, #c084fc, #9333ea); }
+
+        .line {
+            position: absolute;
+            background-color: #334155;
+            z-index: 1;
+            transform-origin: 0 50%;
+        }
+
+        .line-1 { top: 245px; left: 190px; width: 160px; height: 4px; }
+        .line-2 { top: 245px; left: 470px; width: 280px; height: 4px; }
+        .line-3 { top: 270px; left: 410px; width: 4px; height: 110px; }
+
+        .packet {
+            position: absolute;
+            border-radius: 8px;
+            background-color: #38bdf8;
+            color: #0f172a;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 8px;
+            z-index: 3;
+            opacity: 0;
+            white-space: nowrap;
+        }
+
+        /* Animation Keyframes */
+        @keyframes step1 {
+            0% { top: 235px; left: 190px; opacity: 1; content: "Query: 'Test'"; }
+            90% { top: 235px; left: 300px; opacity: 1; }
+            100% { top: 235px; left: 300px; opacity: 0; }
+        }
+        @keyframes step2 {
+            0% { top: 260px; left: 420px; opacity: 1; }
+            90% { top: 360px; left: 420px; opacity: 1; }
+            100% { top: 360px; left: 420px; opacity: 0; }
+        }
+        @keyframes step3 {
+            0% { top: 235px; left: 470px; opacity: 1; background: #c084fc; color: white;}
+            90% { top: 235px; left: 680px; opacity: 1; background: #c084fc; color: white;}
+            100% { top: 235px; left: 680px; opacity: 0; }
+        }
+        @keyframes step4 {
+            0% { top: 235px; left: 680px; opacity: 1; background: #fde047; }
+            90% { top: 235px; left: 470px; opacity: 1; background: #fde047; }
+            100% { top: 235px; left: 470px; opacity: 0; }
+        }
+        @keyframes step5 {
+            0% { top: 360px; left: 390px; opacity: 1; background: #f59e0b; color: white; }
+            90% { top: 260px; left: 390px; opacity: 1; background: #f59e0b; color: white; }
+            100% { top: 260px; left: 390px; opacity: 0; }
+        }
+        @keyframes step6 {
+            0% { top: 235px; left: 300px; opacity: 1; background: #22c55e; color: white; }
+            90% { top: 235px; left: 190px; opacity: 1; background: #22c55e; color: white; }
+            100% { top: 235px; left: 190px; opacity: 0; }
+        }
+
+        .p1 { animation: step1 6s infinite linear; animation-delay: 0s; }
+        .p1::after { content: "1. Query: 'Test'"; }
+
+        .p2 { animation: step2 6s infinite linear; animation-delay: 1s; background: #f59e0b; color: white;}
+        .p2::after { content: "2. Fetch User Data"; }
+
+        .p3 { animation: step3 6s infinite linear; animation-delay: 2s; }
+        .p3::after { content: "3. Send System Prompt + Rules"; }
+
+        .p4 { animation: step4 6s infinite linear; animation-delay: 3.5s; }
+        .p4::after { content: "4. Return UI JSON"; }
+
+        .p5 { animation: step5 6s infinite linear; animation-delay: 4.5s; }
+        .p5::after { content: "5. INSERT (Cache JSON)"; }
+
+        .p6 { animation: step6 6s infinite linear; animation-delay: 5s; }
+        .p6::after { content: "6. Deliver UI to App"; }
+
+        .info-box {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            text-align: left;
+            width: 80%;
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>✨ The SDUI Magic Flow ✨</h1>
+    <p>Watch how a natural language query transforms into a Native Android UI in milliseconds!</p>
+
+    <div class="architecture-container">
+        
+        <div class="info-box">
+            <strong style="color: #38bdf8;">How the Magic Happens:</strong><br>
+            When the user types a query (e.g. "Test" or "Show Accounts"), the Android app sends it to <strong>ai_screen.php</strong>. <br>
+            The PHP script quickly checks MySQL. If it's a new query, it gathers the user's data and sends it to <strong>Gemini AI</strong> along with our strict widget rules.<br>
+            Gemini reads the rules, acts as a UI designer, and builds a strict <strong>JSON tree</strong> using `lazy_column`, `balance_card`, etc. <br>
+            PHP receives the JSON, caches it in MySQL for instant future loads, and sends it to Android where <strong>RendererFactory</strong> paints it natively!
+        </div>
+
+        <div class="line line-1"></div>
+        <div class="line line-2"></div>
+        <div class="line line-3"></div>
+
+        <div class="packet p1"></div>
+        <div class="packet p2"></div>
+        <div class="packet p3"></div>
+        <div class="packet p4"></div>
+        <div class="packet p5"></div>
+        <div class="packet p6"></div>
+
+        <div class="node node-android">📱 Android App<br/><small>(RendererFactory)</small></div>
+        <div class="node node-php">⚙️ PHP API<br/><small>(ai_screen.php)</small></div>
+        <div class="node node-db">🗄️ MySQL DB<br/><small>(dynamic_pages)</small></div>
+        <div class="node node-gemini">🧠 Gemini AI<br/><small>(JSON Generator)</small></div>
+        
+    </div>
+
+</body>
+</html>
