@@ -23,7 +23,7 @@
         }
         .architecture-container {
             position: relative;
-            width: 800px;
+            width: 1000px;
             height: 500px;
         }
         .node {
@@ -43,9 +43,9 @@
         .node-android { top: 350px; left: 50px; background: linear-gradient(135deg, #3DDC84, #1eb761); }
         .node-ai { top: 50px; left: 50px; background: linear-gradient(135deg, #AB68FF, #7834d8); }
         .node-mcp { top: 50px; left: 350px; background: linear-gradient(135deg, #FF5722, #d84315); }
-        .node-bridge { top: 200px; left: 550px; background: linear-gradient(135deg, #777BB4, #505591); }
+        .node-bridge { top: 200px; left: 530px; background: linear-gradient(135deg, #777BB4, #505591); }
         .node-api { top: 350px; left: 350px; background: linear-gradient(135deg, #777BB4, #505591); }
-        .node-db { top: 200px; left: 750px; background: linear-gradient(135deg, #F29111, #c87400); transform: translateX(-50%); }
+        .node-db { top: 200px; left: 850px; background: linear-gradient(135deg, #F29111, #c87400); transform: translateX(-50%); }
 
         .line {
             position: absolute;
@@ -56,10 +56,10 @@
         
         /* Specific lines */
         .line-ai-mcp { top: 80px; left: 200px; width: 150px; height: 4px; }
-        .line-mcp-bridge { top: 90px; left: 470px; width: 220px; height: 4px; transform: rotate(30deg); }
-        .line-bridge-db { top: 230px; left: 660px; width: 90px; height: 4px; }
+        .line-mcp-bridge { top: 90px; left: 470px; width: 220px; height: 4px; transform: rotate(26deg); }
+        .line-bridge-db { top: 230px; left: 660px; width: 140px; height: 4px; }
         .line-android-api { top: 380px; left: 230px; width: 120px; height: 4px; }
-        .line-api-db { top: 380px; left: 440px; width: 320px; height: 4px; transform: rotate(-30deg); }
+        .line-api-db { top: 380px; left: 440px; width: 400px; height: 4px; transform: rotate(-22deg); }
 
         .packet {
             position: absolute;
@@ -79,11 +79,11 @@
         }
         @keyframes move-mcp-bridge {
             0% { top: 84px; left: 470px; opacity: 1; }
-            100% { top: 194px; left: 660px; opacity: 1; }
+            100% { top: 194px; left: 640px; opacity: 1; }
         }
         @keyframes move-bridge-db {
             0% { top: 224px; left: 660px; opacity: 1; }
-            100% { top: 224px; left: 750px; opacity: 1; }
+            100% { top: 224px; left: 820px; opacity: 1; }
         }
 
         @keyframes move-android-api {
@@ -92,7 +92,7 @@
         }
         @keyframes move-api-db {
             0% { top: 374px; left: 440px; opacity: 1; background-color: #3DDC84; }
-            100% { top: 214px; left: 717px; opacity: 1; background-color: #3DDC84; }
+            100% { top: 214px; left: 800px; opacity: 1; background-color: #3DDC84; }
         }
 
         .p1 { animation: move-ai-mcp 1.5s infinite linear; }
@@ -112,7 +112,7 @@
             z-index: 0;
         }
         .zone-local { top: 10px; left: 20px; width: 450px; height: 120px; }
-        .zone-remote { top: 160px; left: 320px; width: 460px; height: 280px; }
+        .zone-remote { top: 160px; left: 300px; width: 620px; height: 280px; }
     </style>
 </head>
 <body>
