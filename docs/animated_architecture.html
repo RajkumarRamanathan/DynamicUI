@@ -72,35 +72,45 @@
             opacity: 0;
         }
 
-        /* Animations */
+        /* Animations (Bidirectional) */
         @keyframes move-ai-mcp {
-            0% { top: 74px; left: 200px; opacity: 1; }
-            100% { top: 74px; left: 350px; opacity: 1; }
+            0% { top: 74px; left: 200px; opacity: 1; background-color: #fff; }
+            40% { top: 74px; left: 350px; opacity: 1; background-color: #fff; }
+            60% { top: 74px; left: 350px; opacity: 1; background-color: #fde047; }
+            100% { top: 74px; left: 200px; opacity: 1; background-color: #fde047; }
         }
         @keyframes move-mcp-bridge {
-            0% { top: 84px; left: 470px; opacity: 1; }
-            100% { top: 194px; left: 640px; opacity: 1; }
+            0% { top: 84px; left: 470px; opacity: 1; background-color: #fff; }
+            40% { top: 194px; left: 640px; opacity: 1; background-color: #fff; }
+            60% { top: 194px; left: 640px; opacity: 1; background-color: #fde047; }
+            100% { top: 84px; left: 470px; opacity: 1; background-color: #fde047; }
         }
         @keyframes move-bridge-db {
-            0% { top: 224px; left: 660px; opacity: 1; }
-            100% { top: 224px; left: 820px; opacity: 1; }
+            0% { top: 224px; left: 660px; opacity: 1; background-color: #fff; }
+            40% { top: 224px; left: 820px; opacity: 1; background-color: #fff; }
+            60% { top: 224px; left: 820px; opacity: 1; background-color: #fde047; }
+            100% { top: 224px; left: 660px; opacity: 1; background-color: #fde047; }
         }
 
         @keyframes move-android-api {
             0% { top: 374px; left: 230px; opacity: 1; background-color: #3DDC84;}
-            100% { top: 374px; left: 350px; opacity: 1; background-color: #3DDC84;}
+            40% { top: 374px; left: 350px; opacity: 1; background-color: #3DDC84;}
+            60% { top: 374px; left: 350px; opacity: 1; background-color: #38bdf8;}
+            100% { top: 374px; left: 230px; opacity: 1; background-color: #38bdf8;}
         }
         @keyframes move-api-db {
             0% { top: 374px; left: 440px; opacity: 1; background-color: #3DDC84; }
-            100% { top: 214px; left: 800px; opacity: 1; background-color: #3DDC84; }
+            40% { top: 214px; left: 800px; opacity: 1; background-color: #3DDC84; }
+            60% { top: 214px; left: 800px; opacity: 1; background-color: #38bdf8; }
+            100% { top: 374px; left: 440px; opacity: 1; background-color: #38bdf8; }
         }
 
-        .p1 { animation: move-ai-mcp 1.5s infinite linear; }
-        .p2 { animation: move-mcp-bridge 1.5s infinite linear; animation-delay: 1.5s; }
-        .p3 { animation: move-bridge-db 0.8s infinite linear; animation-delay: 3s; }
+        .p1 { animation: move-ai-mcp 3s infinite ease-in-out; }
+        .p2 { animation: move-mcp-bridge 3s infinite ease-in-out; animation-delay: 0.5s; }
+        .p3 { animation: move-bridge-db 1.5s infinite ease-in-out; animation-delay: 1.5s; }
         
-        .p4 { animation: move-android-api 1.5s infinite linear; animation-delay: 0.5s; }
-        .p5 { animation: move-api-db 2s infinite linear; animation-delay: 2s; }
+        .p4 { animation: move-android-api 3s infinite ease-in-out; animation-delay: 0.2s; }
+        .p5 { animation: move-api-db 4s infinite ease-in-out; animation-delay: 1.5s; }
 
         .zone {
             position: absolute;
