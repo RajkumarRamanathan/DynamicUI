@@ -18,7 +18,7 @@ nodes = {
     "MCP Server": (420, 80, "#f97316"),
     "Android App": (120, 380, "#22c55e"),
     "PHP API": (420, 380, "#6366f1"),
-    "Gemini AI": (770, 380, "#3b82f6"),
+    "Gemini AI": (740, 380, "#3b82f6"),
     "PHP Bridge": (600, 230, "#6366f1"),
     "MySQL DB": (850, 230, "#f59e0b"),
 }
@@ -71,6 +71,7 @@ for i in range(total_frames):
     draw.line([nodes["PHP Bridge"][:2], nodes["MySQL DB"][:2]], fill="#4a4e69", width=4)
     draw.line([nodes["Android App"][:2], nodes["PHP API"][:2]], fill="#4a4e69", width=4)
     draw.line([nodes["PHP API"][:2], nodes["MySQL DB"][:2]], fill="#4a4e69", width=4)
+    draw.line([nodes["PHP API"][:2], nodes["Gemini AI"][:2]], fill="#4a4e69", width=4)
     
     # Draw nodes
     for name, pos in nodes.items():
