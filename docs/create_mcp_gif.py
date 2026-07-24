@@ -18,6 +18,7 @@ nodes = {
     "MCP Server": (420, 80, "#f97316"),
     "Android App": (120, 380, "#22c55e"),
     "PHP API": (420, 380, "#6366f1"),
+    "Gemini AI": (770, 380, "#3b82f6"),
     "PHP Bridge": (600, 230, "#6366f1"),
     "MySQL DB": (850, 230, "#f59e0b"),
 }
@@ -28,7 +29,8 @@ paths = [
     ("MCP Server", "PHP Bridge", 5),
     ("PHP Bridge", "MySQL DB", 10),
     ("Android App", "PHP API", 0),
-    ("PHP API", "MySQL DB", 5)
+    ("PHP API", "MySQL DB", 5),
+    ("PHP API", "Gemini AI", 15)
 ]
 
 def draw_rounded_rect(draw, x, y, w, h, r, color):

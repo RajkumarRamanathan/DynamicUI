@@ -45,6 +45,7 @@
         .node-mcp { top: 50px; left: 350px; background: linear-gradient(135deg, #FF5722, #d84315); }
         .node-bridge { top: 200px; left: 530px; background: linear-gradient(135deg, #777BB4, #505591); }
         .node-api { top: 350px; left: 350px; background: linear-gradient(135deg, #777BB4, #505591); }
+        .node-gemini { top: 350px; left: 700px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
         .node-db { top: 200px; left: 850px; background: linear-gradient(135deg, #F29111, #c87400); transform: translateX(-50%); }
 
         .line {
@@ -59,6 +60,7 @@
         .line-mcp-bridge { top: 90px; left: 470px; width: 220px; height: 4px; transform: rotate(26deg); }
         .line-bridge-db { top: 230px; left: 660px; width: 140px; height: 4px; }
         .line-android-api { top: 380px; left: 230px; width: 120px; height: 4px; }
+        .line-api-gemini { top: 380px; left: 440px; width: 260px; height: 4px; }
         .line-api-db { top: 380px; left: 440px; width: 400px; height: 4px; transform: rotate(-22deg); }
 
         .packet {
@@ -98,6 +100,12 @@
             60% { top: 374px; left: 350px; opacity: 1; background-color: #38bdf8;}
             100% { top: 374px; left: 230px; opacity: 1; background-color: #38bdf8;}
         }
+        @keyframes move-api-gemini {
+            0% { top: 374px; left: 440px; opacity: 1; background-color: #3DDC84; }
+            40% { top: 374px; left: 700px; opacity: 1; background-color: #3DDC84; }
+            60% { top: 374px; left: 700px; opacity: 1; background-color: #38bdf8; }
+            100% { top: 374px; left: 440px; opacity: 1; background-color: #38bdf8; }
+        }
         @keyframes move-api-db {
             0% { top: 374px; left: 440px; opacity: 1; background-color: #3DDC84; }
             40% { top: 214px; left: 800px; opacity: 1; background-color: #3DDC84; }
@@ -111,6 +119,7 @@
         
         .p4 { animation: move-android-api 3s infinite ease-in-out; animation-delay: 0.2s; }
         .p5 { animation: move-api-db 4s infinite ease-in-out; animation-delay: 1.5s; }
+        .p6 { animation: move-api-gemini 4s infinite ease-in-out; animation-delay: 2.5s; }
 
         .zone {
             position: absolute;
@@ -140,6 +149,7 @@
         <div class="line line-bridge-db"></div>
         <div class="line line-android-api"></div>
         <div class="line line-api-db"></div>
+        <div class="line line-api-gemini"></div>
 
         <!-- Animated Packets (Developer Flow) -->
         <div class="packet p1"></div>
@@ -149,6 +159,7 @@
         <!-- Animated Packets (User Flow) -->
         <div class="packet p4"></div>
         <div class="packet p5"></div>
+        <div class="packet p6"></div>
 
         <!-- Nodes -->
         <div class="node node-ai">🤖 AI Client<br/><small>(Copilot)</small></div>
@@ -156,6 +167,7 @@
         
         <div class="node node-android">📱 Android App<br/><small>(SDUI)</small></div>
         <div class="node node-api">⚙️ PHP API<br/><small>(screen.php)</small></div>
+        <div class="node node-gemini">✨ Gemini AI<br/><small>(Generator)</small></div>
         
         <div class="node node-bridge">🌉 PHP Bridge<br/><small>(mcp_bridge.php)</small></div>
         
